@@ -15,8 +15,7 @@ class FloatingIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final corFundo = modoEscuro ? const Color(0xFF2A2A2A) : const Color(0xFFF4EFE6);
-    final corSombraClara = modoEscuro ? Colors.white.withOpacity(0.03) : Colors.white.withOpacity(0.8);
-    final corSombraEscura = modoEscuro ? Colors.black.withOpacity(0.4) : Colors.black.withOpacity(0.05);
+    final corSombra = modoEscuro ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.08);
     final corIcone = modoEscuro ? Colors.white70 : const Color(0xFF4A4A4A);
 
     return Container(
@@ -26,17 +25,12 @@ class FloatingIconButton extends StatelessWidget {
         color: corFundo,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
-          BoxShadow(
-            color: corSombraEscura,
-            offset: const Offset(0, 4),
-            blurRadius: 8,
-          ),
-          BoxShadow(
-            color: corSombraClara,
-            offset: const Offset(-2, -2),
-            blurRadius: 8,
-          ),
-        ],
+              BoxShadow(
+                color: corSombra,
+                offset: const Offset(0, 2),
+                blurRadius: 6,
+              ),
+            ],
       ),
       child: IconButton(
         icon: Icon(icone, color: corIcone),
