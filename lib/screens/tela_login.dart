@@ -126,7 +126,6 @@ class _TelaLoginState extends State<TelaLogin> {
                     children: [
                       const SizedBox(height: 20),
                       const LogoMock(cor: corTextoDestaque),
-                      const SizedBox(height: 40),
                       Text(
                         'Acesso',
                         textAlign: TextAlign.center,

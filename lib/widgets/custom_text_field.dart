@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final String rotulo;
   final String dica;
   final bool senha;
@@ -17,19 +17,32 @@ class CustomTextField extends StatelessWidget {
   });
 
   @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  late bool _ocultaSenha;
+
+  @override
+  void initState() {
+    super.initState();
+    _ocultaSenha = widget.senha;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final corRotulo = modoEscuro ? const Color(0xFFCCCCCC) : const Color(0xFF4A4A4A);
-    final corFundo = modoEscuro ? const Color(0xFF252525) : const Color(0xFFEBE4D5);
-    final corSombraClara = modoEscuro ? Colors.white.withOpacity(0.03) : Colors.white.withOpacity(0.6);
-    final corSombraEscura = modoEscuro ? Colors.black.withOpacity(0.6) : Colors.black.withOpacity(0.03);
-    final corTexto = modoEscuro ? Colors.white : Colors.black87;
-    final corDica = modoEscuro ? Colors.grey[600] : const Color(0xFF9E9E9E);
+    final corRotulo = widget.modoEscuro ? const Color(0xFFCCCCCC) : const Color(0xFF4A4A4A);
+    final corFundo = widget.modoEscuro ? const Color(0xFF252525) : const Color(0xFFEBE4D5);
+    final corSombra = widget.modoEscuro ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.08);
+    final corTexto = widget.modoEscuro ? Colors.white : Colors.black87;
+    final corDica = widget.modoEscuro ? Colors.grey[600] : const Color(0xFF9E9E9E);
+    final corIcone = widget.modoEscuro ? Colors.grey[400] : Colors.grey[600];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          rotulo.toUpperCase(),
+          widget.rotulo.toUpperCase(),
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w800,
@@ -44,26 +57,34 @@ class CustomTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: corSombraClara,
-                offset: const Offset(-2, -2),
-                blurRadius: 4,
-              ),
-              BoxShadow(
-                color: corSombraEscura,
-                offset: const Offset(2, 2),
-                blurRadius: 4,
+                color: corSombra,
+                offset: const Offset(0, 2),
+                blurRadius: 6,
               ),
             ],
           ),
           child: TextField(
-            controller: controlador,
-            obscureText: senha,
+            controller: widget.controlador,
+            obscureText: _ocultaSenha,
             style: TextStyle(color: corTexto),
             decoration: InputDecoration(
-              hintText: dica,
+              hintText: widget.dica,
               hintStyle: TextStyle(color: corDica),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              suffixIcon: widget.senha
+                  ? IconButton(
+                      icon: Icon(
+                        _ocultaSenha ? Icons.visibility_off : Icons.visibility,
+                        color: corIcone,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _ocultaSenha = !_ocultaSenha;
+                        });
+                      },
+                    )
+                  : null,
             ),
           ),
         )
@@ -71,3 +92,4 @@ class CustomTextField extends StatelessWidget {
     );
   }
 }
+
