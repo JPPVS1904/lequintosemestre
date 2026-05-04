@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
-import '../widgets/logo_mock.dart';
-import '../widgets/custom_text_field.dart';
-import '../widgets/login_button.dart';
-import '../widgets/footer_text.dart';
-import '../widgets/floating_icon_button.dart';
-import '../theme/theme_notifier.dart';
+import '../widgets/login_form.dart';
+import '../widgets/login_drawer.dart';
+import '../widgets/theme_toggle_button.dart';
+import 'dashboard_screen.dart'; // We will create this
 
 class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
@@ -19,6 +17,9 @@ class _TelaLoginState extends State<TelaLogin> {
   final TextEditingController _controladorSenha = TextEditingController();
   final AuthService _authService = AuthService();
   bool _carregando = false;
+  bool _lembrarMe = false;
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Future<void> _entrar() async {
     setState(() {
@@ -33,7 +34,6 @@ class _TelaLoginState extends State<TelaLogin> {
 
       if (mounted) {
         if (sucesso) {
-          // Feedback visual em pop-up detalhado
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -54,8 +54,11 @@ class _TelaLoginState extends State<TelaLogin> {
                 actions: [
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop(); // Fecha o diálogo
-                      // No futuro, coloque aqui: Navigator.pushReplacement(context, ...TelaPrincipal);
+                      Navigator.of(context).pop();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const DashboardScreen()),
+                      );
                     },
                     child: const Text('ENTRAR NO APP', style: TextStyle(color: Color(0xFFC79E3A), fontWeight: FontWeight.bold)),
                   ),
@@ -95,107 +98,70 @@ class _TelaLoginState extends State<TelaLogin> {
   Widget build(BuildContext context) {
     final bool modoEscuro = Theme.of(context).brightness == Brightness.dark;
 
-    final corFundoCentro = modoEscuro ? const Color(0xFF2C2C2C) : const Color(0xFFF4EFE6);
-    final corFundoBorda = modoEscuro ? const Color(0xFF1A1A1A) : const Color(0xFFE4DCCF);
-    
-    final corTextoPrincipal = modoEscuro ? const Color(0xFFE0E0E0) : const Color(0xFF2D2D2D);
-    final corTextoSecundario = modoEscuro ? const Color(0xFFAAAAAA) : const Color(0xFF7A7A7A);
-    const corTextoDestaque = Color(0xFFC79E3A);
+    final bgGradient = modoEscuro 
+        ? const LinearGradient(
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
+            colors: [Color(0xFF020304), Color(0xFF0D0F11), Color(0xFF242830)],
+          )
+        : const LinearGradient(
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
+            colors: [Color(0xFFC8BFB0), Color(0xFFE2D9CC), Color(0xFFF5F0E8)],
+          );
+
+    final boxBgColor = modoEscuro ? const Color(0xFF16191C) : const Color(0xFFF2EDE4);
+    final boxBorderColor = modoEscuro ? const Color(0xFF2A2D31) : const Color(0xFFD9D3C8);
+    final corTextoPrincipal = modoEscuro ? const Color(0xFFF0F2F5) : const Color(0xFF1A1C1E);
 
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: const LoginDrawer(),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment.topCenter,
-            radius: 1.5,
-            colors: [
-              corFundoCentro,
-              corFundoBorda,
-            ],
-          ),
-        ),
+        decoration: BoxDecoration(gradient: bgGradient),
         child: SafeArea(
           child: Stack(
             children: [
               Center(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SizedBox(height: 20),
-                      const LogoMock(cor: corTextoDestaque),
-                      Text(
-                        'Acesso',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: corTextoPrincipal,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'PORTAL COMUNIDADE SÃO MIGUEL',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1.5,
-                          color: corTextoSecundario,
-                        ),
-                      ),
-                      const SizedBox(height: 48),
-                      CustomTextField(
-                        rotulo: 'E-mail',
-                        dica: 'seu@email.com',
-                        senha: false,
-                        controlador: _controladorEmail,
-                        modoEscuro: modoEscuro,
-                      ),
-                      const SizedBox(height: 24),
-                      CustomTextField(
-                        rotulo: 'Senha',
-                        dica: '••••••••',
-                        senha: true,
-                        controlador: _controladorSenha,
-                        modoEscuro: modoEscuro,
-                      ),
-                      const SizedBox(height: 40),
-                      LoginButton(
-                        carregando: _carregando,
-                        aoClicar: _entrar,
-                      ),
-                      const SizedBox(height: 32),
-                      FooterText(
-                        corTextoSecundario: corTextoSecundario,
-                        corDestaque: corTextoDestaque,
-                      ),
-                      const SizedBox(height: 40),
-                    ],
-                  ),
+                child: LoginForm(
+                  controladorEmail: _controladorEmail,
+                  controladorSenha: _controladorSenha,
+                  carregando: _carregando,
+                  lembrarMe: _lembrarMe,
+                  onChangedLembrarMe: (val) {
+                    setState(() {
+                      _lembrarMe = val ?? false;
+                    });
+                  },
+                  aoClicarEntrar: _entrar,
+                  aoClicarCriarConta: () {
+                    Navigator.pushNamed(context, '/register');
+                  },
                 ),
               ),
               Positioned(
                 top: 16,
                 left: 16,
-                child: FloatingIconButton(
-                  icone: Icons.menu,
-                  modoEscuro: modoEscuro,
-                  aoClicar: () {},
+                child: InkWell(
+                  onTap: () {
+                    _scaffoldKey.currentState?.openDrawer();
+                  },
+                  borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: boxBgColor.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: boxBorderColor),
+                    ),
+                    child: Icon(Icons.menu, color: corTextoPrincipal),
+                  ),
                 ),
               ),
-              Positioned(
-                bottom: 16,
-                right: 16,
-                child: FloatingIconButton(
-                  icone: modoEscuro ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-                  modoEscuro: modoEscuro,
-                  aoClicar: () {
-                    modoEscuroNotifier.value = !modoEscuroNotifier.value;
-                  },
-                ),
+              const Positioned(
+                bottom: 24,
+                right: 24,
+                child: ThemeToggleButton(),
               ),
             ],
           ),
