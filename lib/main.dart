@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'theme/theme_notifier.dart';
-import 'screens/login_screen.dart'; // We will rename the file
+import 'screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
