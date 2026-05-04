@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatefulWidget {
-  final String rotulo;
-  final String dica;
-  final bool senha;
-  final TextEditingController controlador;
-  final bool modoEscuro;
+  final String label;
+  final String hint;
+  final bool isPassword;
+  final TextEditingController controller;
+  final bool isDarkMode;
 
   const CustomTextField({
     super.key,
-    required this.rotulo,
-    required this.dica,
-    required this.senha,
-    required this.controlador,
-    required this.modoEscuro,
+    required this.label,
+    required this.hint,
+    required this.isPassword,
+    required this.controller,
+    required this.isDarkMode,
   });
 
   @override
@@ -21,66 +21,66 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  late bool _ocultaSenha;
+  late bool _obscureText;
 
   @override
   void initState() {
     super.initState();
-    _ocultaSenha = widget.senha;
+    _obscureText = widget.isPassword;
   }
 
   @override
   Widget build(BuildContext context) {
-    final corRotulo = widget.modoEscuro ? const Color(0xFFCCCCCC) : const Color(0xFF4A4A4A);
-    final corFundo = widget.modoEscuro ? const Color(0xFF252525) : const Color(0xFFEBE4D5);
-    final corSombra = widget.modoEscuro ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.08);
-    final corTexto = widget.modoEscuro ? Colors.white : Colors.black87;
-    final corDica = widget.modoEscuro ? Colors.grey[600] : const Color(0xFF9E9E9E);
-    final corIcone = widget.modoEscuro ? Colors.grey[400] : Colors.grey[600];
+    final labelColor = widget.isDarkMode ? const Color(0xFFCCCCCC) : const Color(0xFF4A4A4A);
+    final backgroundColor = widget.isDarkMode ? const Color(0xFF252525) : const Color(0xFFEBE4D5);
+    final shadowColor = widget.isDarkMode ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.08);
+    final textColor = widget.isDarkMode ? Colors.white : Colors.black87;
+    final hintColor = widget.isDarkMode ? Colors.grey[600] : const Color(0xFF9E9E9E);
+    final iconColor = widget.isDarkMode ? Colors.grey[400] : Colors.grey[600];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          widget.rotulo.toUpperCase(),
+          widget.label.toUpperCase(),
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w800,
-            color: corRotulo,
+            color: labelColor,
             letterSpacing: 0.5,
           ),
         ),
         const SizedBox(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: corFundo,
+            color: backgroundColor,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: corSombra,
+                color: shadowColor,
                 offset: const Offset(0, 2),
                 blurRadius: 6,
               ),
             ],
           ),
           child: TextField(
-            controller: widget.controlador,
-            obscureText: _ocultaSenha,
-            style: TextStyle(color: corTexto),
+            controller: widget.controller,
+            obscureText: _obscureText,
+            style: TextStyle(color: textColor),
             decoration: InputDecoration(
-              hintText: widget.dica,
-              hintStyle: TextStyle(color: corDica),
+              hintText: widget.hint,
+              hintStyle: TextStyle(color: hintColor),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              suffixIcon: widget.senha
+              suffixIcon: widget.isPassword
                   ? IconButton(
                       icon: Icon(
-                        _ocultaSenha ? Icons.visibility_off : Icons.visibility,
-                        color: corIcone,
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                        color: iconColor,
                       ),
                       onPressed: () {
                         setState(() {
-                          _ocultaSenha = !_ocultaSenha;
+                          _obscureText = !_obscureText;
                         });
                       },
                     )

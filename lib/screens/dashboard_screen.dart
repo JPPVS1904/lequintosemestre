@@ -39,9 +39,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool modoEscuro = Theme.of(context).brightness == Brightness.dark;
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    final bgGradient = modoEscuro 
+    final bgGradient = isDarkMode 
         ? const LinearGradient(
             begin: Alignment.bottomLeft,
             end: Alignment.topRight,
@@ -53,8 +53,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             colors: [Color(0xFFC8BFB0), Color(0xFFE2D9CC), Color(0xFFF5F0E8)],
           );
 
-    final corTextoPrincipal = modoEscuro ? const Color(0xFFF0F2F5) : const Color(0xFF1A1C1E);
-    final corTextoSecundario = modoEscuro ? const Color(0xFF9BA1A6) : const Color(0xFF44474A);
+    final primaryTextColor = isDarkMode ? const Color(0xFFF0F2F5) : const Color(0xFF1A1C1E);
+    final secondaryTextColor = isDarkMode ? const Color(0xFF9BA1A6) : const Color(0xFF44474A);
 
     return Scaffold(
       body: Container(
@@ -77,7 +77,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w900,
-                              color: corTextoPrincipal,
+                              color: primaryTextColor,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -85,7 +85,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'Inscreva-se nos próximos eventos.',
                             style: TextStyle(
                               fontSize: 14,
-                              color: corTextoSecundario,
+                              color: secondaryTextColor,
                             ),
                           ),
                         ],
@@ -105,7 +105,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             const SizedBox(height: 16),
                             Text(
                               'Buscando dados...',
-                              style: TextStyle(color: corTextoSecundario),
+                              style: TextStyle(color: secondaryTextColor),
                             ),
                           ],
                         ),
@@ -117,10 +117,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               child: Container(
                                 padding: const EdgeInsets.all(32),
                                 decoration: BoxDecoration(
-                                  color: modoEscuro ? const Color(0xFF16191C).withOpacity(0.5) : const Color(0xFFF2EDE4).withOpacity(0.5),
+                                  color: isDarkMode ? const Color(0xFF16191C).withOpacity(0.5) : const Color(0xFFF2EDE4).withOpacity(0.5),
                                   borderRadius: BorderRadius.circular(32),
                                   border: Border.all(
-                                    color: (modoEscuro ? const Color(0xFF2A2D31) : const Color(0xFFD9D3C8)),
+                                    color: (isDarkMode ? const Color(0xFF2A2D31) : const Color(0xFFD9D3C8)),
                                     style: BorderStyle.solid,
                                   ),
                                 ),
@@ -132,7 +132,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
-                                        color: corTextoSecundario,
+                                        color: secondaryTextColor,
                                         letterSpacing: 1.5,
                                       ),
                                     ),
@@ -140,8 +140,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     ElevatedButton(
                                       onPressed: _fetchEvents,
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: corTextoPrincipal,
-                                        foregroundColor: modoEscuro ? const Color(0xFF0D0F11) : const Color(0xFFE2D9CC),
+                                        backgroundColor: primaryTextColor,
+                                        foregroundColor: isDarkMode ? const Color(0xFF0D0F11) : const Color(0xFFE2D9CC),
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(24),
                                         ),

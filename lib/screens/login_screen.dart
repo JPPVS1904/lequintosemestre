@@ -5,35 +5,35 @@ import '../widgets/login_drawer.dart';
 import '../widgets/theme_toggle_button.dart';
 import 'dashboard_screen.dart'; // We will create this
 
-class TelaLogin extends StatefulWidget {
-  const TelaLogin({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<TelaLogin> createState() => _TelaLoginState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _TelaLoginState extends State<TelaLogin> {
-  final TextEditingController _controladorEmail = TextEditingController();
-  final TextEditingController _controladorSenha = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
-  bool _carregando = false;
-  bool _lembrarMe = false;
+  bool _isLoading = false;
+  bool _rememberMe = false;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  Future<void> _entrar() async {
+  Future<void> _login() async {
     setState(() {
-      _carregando = true;
+      _isLoading = true;
     });
 
     try {
-      final sucesso = await _authService.login(
-        _controladorEmail.text,
-        _controladorSenha.text,
+      final success = await _authService.login(
+        _emailController.text,
+        _passwordController.text,
       );
 
       if (mounted) {
-        if (sucesso) {
+        if (success) {
           showDialog(
             context: context,
             barrierDismissible: false,
@@ -81,7 +81,7 @@ class _TelaLoginState extends State<TelaLogin> {
     } finally {
       if (mounted) {
         setState(() {
-          _carregando = false;
+          _isLoading = false;
         });
       }
     }
@@ -89,16 +89,16 @@ class _TelaLoginState extends State<TelaLogin> {
 
   @override
   void dispose() {
-    _controladorEmail.dispose();
-    _controladorSenha.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool modoEscuro = Theme.of(context).brightness == Brightness.dark;
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    final bgGradient = modoEscuro 
+    final bgGradient = isDarkMode 
         ? const LinearGradient(
             begin: Alignment.bottomLeft,
             end: Alignment.topRight,
@@ -110,9 +110,9 @@ class _TelaLoginState extends State<TelaLogin> {
             colors: [Color(0xFFC8BFB0), Color(0xFFE2D9CC), Color(0xFFF5F0E8)],
           );
 
-    final boxBgColor = modoEscuro ? const Color(0xFF16191C) : const Color(0xFFF2EDE4);
-    final boxBorderColor = modoEscuro ? const Color(0xFF2A2D31) : const Color(0xFFD9D3C8);
-    final corTextoPrincipal = modoEscuro ? const Color(0xFFF0F2F5) : const Color(0xFF1A1C1E);
+    final boxBgColor = isDarkMode ? const Color(0xFF16191C) : const Color(0xFFF2EDE4);
+    final boxBorderColor = isDarkMode ? const Color(0xFF2A2D31) : const Color(0xFFD9D3C8);
+    final primaryTextColor = isDarkMode ? const Color(0xFFF0F2F5) : const Color(0xFF1A1C1E);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -124,17 +124,17 @@ class _TelaLoginState extends State<TelaLogin> {
             children: [
               Center(
                 child: LoginForm(
-                  controladorEmail: _controladorEmail,
-                  controladorSenha: _controladorSenha,
-                  carregando: _carregando,
-                  lembrarMe: _lembrarMe,
-                  onChangedLembrarMe: (val) {
+                  emailController: _emailController,
+                  passwordController: _passwordController,
+                  isLoading: _isLoading,
+                  rememberMe: _rememberMe,
+                  onChangedRememberMe: (val) {
                     setState(() {
-                      _lembrarMe = val ?? false;
+                      _rememberMe = val ?? false;
                     });
                   },
-                  aoClicarEntrar: _entrar,
-                  aoClicarCriarConta: () {
+                  onClickLogin: _login,
+                  onClickCreateAccount: () {
                     Navigator.pushNamed(context, '/register');
                   },
                 ),
@@ -154,7 +154,7 @@ class _TelaLoginState extends State<TelaLogin> {
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: boxBorderColor),
                     ),
-                    child: Icon(Icons.menu, color: corTextoPrincipal),
+                    child: Icon(Icons.menu, color: primaryTextColor),
                   ),
                 ),
               ),

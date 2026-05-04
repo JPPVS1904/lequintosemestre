@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class LoginButton extends StatelessWidget {
-  final bool carregando;
-  final VoidCallback aoClicar;
+  final bool isLoading;
+  final VoidCallback onClick;
 
   const LoginButton({
     super.key,
-    required this.carregando,
-    required this.aoClicar,
+    required this.isLoading,
+    required this.onClick,
   });
 
   @override
@@ -24,7 +24,7 @@ class LoginButton extends StatelessWidget {
         ],
       ),
       child: ElevatedButton(
-        onPressed: carregando ? null : aoClicar,
+        onPressed: isLoading ? null : onClick,
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFFC79E3A),
           foregroundColor: Colors.white,
@@ -35,7 +35,7 @@ class LoginButton extends StatelessWidget {
           ),
           disabledBackgroundColor: const Color(0xFFC79E3A).withOpacity(0.6),
         ),
-        child: carregando 
+        child: isLoading 
           ? const SizedBox(
               height: 20, 
               width: 20, 

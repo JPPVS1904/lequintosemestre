@@ -13,13 +13,13 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool modoEscuro = Theme.of(context).brightness == Brightness.dark;
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     
-    final bgSecondary = modoEscuro ? const Color(0xFF16191C) : const Color(0xFFF2EDE4);
-    final borderUi = modoEscuro ? const Color(0xFF2A2D31) : const Color(0xFFD9D3C8);
-    final textPrimary = modoEscuro ? const Color(0xFFF0F2F5) : const Color(0xFF1A1C1E);
+    final bgSecondary = isDarkMode ? const Color(0xFF16191C) : const Color(0xFFF2EDE4);
+    final borderUi = isDarkMode ? const Color(0xFF2A2D31) : const Color(0xFFD9D3C8);
+    final textPrimary = isDarkMode ? const Color(0xFFF0F2F5) : const Color(0xFF1A1C1E);
     final brandColor = const Color(0xFFC4982A);
-    final bgPrimary = modoEscuro ? const Color(0xFF0D0F11) : const Color(0xFFE2D9CC);
+    final bgPrimary = isDarkMode ? const Color(0xFF0D0F11) : const Color(0xFFE2D9CC);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),

@@ -1,3 +1,3 @@
 import 'package:flutter/material.dart';
 
-final ValueNotifier<bool> modoEscuroNotifier = ValueNotifier(false);
+final ValueNotifier<bool> darkModeNotifier = ValueNotifier(false);

@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   final String urlBase;
@@ -23,6 +24,12 @@ class AuthService {
       );
 
       if (resposta.statusCode == 200) {
+        final dados = jsonDecode(resposta.body);
+        final token = dados['token'] ?? dados['access_token'];
+        if (token != null) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('auth_token', token.toString());
+        }
         return true;
       } else {
         return false;

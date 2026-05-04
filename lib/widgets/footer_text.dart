@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class FooterText extends StatelessWidget {
-  final Color corTextoSecundario;
-  final Color corDestaque;
+  final Color secondaryTextColor;
+  final Color highlightColor;
 
   const FooterText({
     super.key,
-    required this.corTextoSecundario,
-    required this.corDestaque,
+    required this.secondaryTextColor,
+    required this.highlightColor,
   });
 
   @override
@@ -17,14 +17,14 @@ class FooterText extends StatelessWidget {
       children: [
         Text(
           'Novo por aqui? ',
-          style: TextStyle(color: corTextoSecundario, fontSize: 13),
+          style: TextStyle(color: secondaryTextColor, fontSize: 13),
         ),
         GestureDetector(
           onTap: () {},
           child: Text(
             'Crie sua conta',
             style: TextStyle(
-              color: corDestaque,
+              color: highlightColor,
               fontSize: 13,
               fontWeight: FontWeight.bold,
             ),
