@@ -9,7 +9,7 @@ class LogoMock extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image.asset(
       'lib/images/logo_comunidade_sao_miguel.png',
-      height: 220,
+      height: 300,
     );
   }
 }

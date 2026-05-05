@@ -36,10 +36,9 @@ class LoginForm extends StatelessWidget {
         children: [
           Image.asset(
             'lib/images/logo_comunidade_sao_miguel.png',
-            height: 120,
-            errorBuilder: (context, error, stackTrace) => const Icon(Icons.security, size: 100, color: highlightTextColor),
+            height: 280,
+            errorBuilder: (context, error, stackTrace) => const Icon(Icons.security, size: 250, color: highlightTextColor),
           ),
-          const SizedBox(height: 16),
           Text(
             'Acesso',
             style: TextStyle(
