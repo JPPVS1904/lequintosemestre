@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_theme.dart';
 
-/// Barra lateral de login correspondente à barra lateral do Login.svelte
-/// Contém: "Onde Estamos" (link do Maps) e link do "Instagram"
+// Barra lateral de login
 class LoginDrawer extends StatelessWidget {
   const LoginDrawer({super.key});
 
@@ -32,7 +31,7 @@ class LoginDrawer extends StatelessWidget {
         children: [
           const SizedBox(height: 100),
 
-          // ── Onde Estamos ──
+          // Onde Estamos
           ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
             leading: Container(
@@ -55,7 +54,7 @@ class LoginDrawer extends StatelessWidget {
 
           const SizedBox(height: 4),
 
-          // ── Instagram ──
+          // Instagram
           ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
             leading: Container(
@@ -85,7 +84,7 @@ class LoginDrawer extends StatelessWidget {
 
           const Spacer(),
 
-          // ── Rodapé ──
+          // Rodapé
           Container(
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(

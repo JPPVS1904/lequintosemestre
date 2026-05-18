@@ -11,8 +11,8 @@ import '../widgets/event_card.dart';
 import 'event_details_view.dart';
 import 'event_form_screen.dart';
 
-/// Tela do Painel correspondente a Dashboard.svelte
-/// Abas: events, subscriptions, profile, event_details, event_form (admin)
+// Tela do Painel
+// Abas: events, subscriptions, profile, event_details, event_form (admin)
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -237,9 +237,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  // ═══════════════════════════════════════
-  // ── ABA DE EVENTOS ──
-  // ═══════════════════════════════════════
+  // ABA DE EVENTOS
   Widget _buildEventsTab() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
@@ -283,9 +281,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // ═══════════════════════════════════════
-  // ── ABA DE INSCRIÇÕES ──
-  // ═══════════════════════════════════════
+  // ABA DE INSCRIÇÕES
   Widget _buildSubscriptionsTab() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
@@ -367,9 +363,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // ═══════════════════════════════════════
-  // ── ABA DE PERFIL ──
-  // ═══════════════════════════════════════
+  // ABA DE PERFIL
   Widget _buildProfileTab() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;

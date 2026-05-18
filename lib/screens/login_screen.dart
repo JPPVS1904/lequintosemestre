@@ -6,7 +6,7 @@ import '../theme/app_theme.dart';
 import '../widgets/login_drawer.dart';
 import '../widgets/app_modal.dart';
 
-/// Formatador de CPF – aplica máscara 000.000.000-00
+// Formatador de CPF - aplica máscara 000.000.000-00
 class CpfInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -30,7 +30,7 @@ class CpfInputFormatter extends TextInputFormatter {
   }
 }
 
-/// Tela de Login correspondente a Login.svelte
+// Tela de Login
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: const LoginDrawer(),
-      // Fundo gradiente correspondente ao App.svelte
+      // Fundo gradiente
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SafeArea(
           child: Stack(
             children: [
-              // ── Botão do menu hambúrguer ──
+              // Botão do menu hambúrguer
               Positioned(
                 top: 8,
                 left: 8,
@@ -110,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              // ── FAB de alternância de tema ──
+              // FAB de alternância de tema
               Positioned(
                 bottom: 16,
                 right: 16,
@@ -127,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              // ── Formulário principal ──
+              // Formulário principal
               Center(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
@@ -146,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 12),
 
-                      // Title
+                      // Título
                       Text(
                         'Acesso',
                         style: TextStyle(
@@ -167,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 36),
 
-                      // CPF field
+                      // Campo CPF
                       _buildLabel('CPF'),
                       const SizedBox(height: 6),
                       TextField(
@@ -178,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      // Password field
+                      // Campo Senha
                       _buildLabel('SENHA'),
                       const SizedBox(height: 6),
                       TextField(
@@ -198,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 12),
 
-                      // Remember me
+                      // Lembrar de mim
                       Row(
                         children: [
                           Checkbox(
@@ -220,7 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      // Login button
+                      // Botão de login
                       SizedBox(
                         width: double.infinity,
                         child: Container(
@@ -251,7 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 40),
 
-                      // Register link
+                      // Link para registro
                       GestureDetector(
                         onTap: () => Navigator.pushNamed(context, '/register'),
                         child: RichText(

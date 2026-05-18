@@ -39,14 +39,14 @@ class Event {
 
   String get typeLabel => isFestival ? 'Festival' : 'Acampamento';
 
-  // Event fee based on type (camper_fee for Camping, ticket_price for Festival)
+  // Preço de inscrição baseado no tipo (camper_fee para Acampamento, ticket_price para Festival)
   double get fee {
     if (eventable == null) return 0;
     final raw = eventable!['camper_fee'] ?? eventable!['ticket_price'] ?? 0;
     return double.tryParse(raw.toString()) ?? 0;
   }
 
-  // End date calculated from start_date + duration_days
+  // Data final calculada a partir de data inicial + duração
   DateTime? get endDate {
     if (startDate == null) return null;
     final start = DateTime.tryParse(startDate!);

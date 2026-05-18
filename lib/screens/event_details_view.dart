@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/event.dart';
 import '../theme/app_theme.dart';
 
-/// Tela de detalhes do evento correspondente ao EventDetails.svelte
+// Tela de detalhes do evento
 class EventDetailsView extends StatelessWidget {
   final Event event;
   final VoidCallback onBack;
@@ -53,7 +53,7 @@ class EventDetailsView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Botão de voltar ──
+        // Botão de voltar
         TextButton.icon(
           onPressed: onBack,
           icon: Icon(Icons.arrow_back_ios_rounded, size: 16, color: textSecondary),
@@ -69,7 +69,7 @@ class EventDetailsView extends StatelessWidget {
         ),
         const SizedBox(height: 12),
 
-        // ── Card principal ──
+        // Card principal
         Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
@@ -114,7 +114,7 @@ class EventDetailsView extends StatelessWidget {
               ),
               Divider(color: borderColor, height: 32),
 
-              // ── Linhas de informação ──
+              // Linhas de informação
               _InfoRow(label: 'LOCAL', value: event.place ?? 'Não informado', borderColor: borderColor, textPrimary: textPrimary, textSecondary: textSecondary),
               _InfoRow(label: 'INÍCIO', value: _formatDate(event.startDate), borderColor: borderColor, textPrimary: textPrimary, textSecondary: textSecondary),
               _InfoRow(label: 'TÉRMINO', value: endDateStr, borderColor: borderColor, textPrimary: textPrimary, textSecondary: textSecondary),
@@ -129,7 +129,7 @@ class EventDetailsView extends StatelessWidget {
                 valueFontSize: 18,
               ),
 
-              // ── Imagem ──
+              // Imagem
               if (event.image != null) ...[
                 const SizedBox(height: 20),
                 ClipRRect(
@@ -163,7 +163,7 @@ class EventDetailsView extends StatelessWidget {
 
               Divider(color: borderColor, height: 32),
 
-              // ── Botões de ação ──
+              // Botões de ação
               if (notice != null || term != null)
                 Wrap(
                   spacing: 8,
@@ -209,7 +209,7 @@ class EventDetailsView extends StatelessWidget {
                 ),
               const SizedBox(height: 16),
 
-              // Subscribe button
+              // Botão de inscrição
               SizedBox(
                 width: double.infinity,
                 child: Container(

@@ -20,7 +20,7 @@ class EventService {
     };
   }
 
-  /// Busca eventos – admin vê todos, usuários normais vêem apenas os disponíveis
+  // Busca eventos
   Future<List<Event>> fetchEvents({bool isAdmin = false}) async {
     try {
       final headers = await _authHeaders();
@@ -48,7 +48,7 @@ class EventService {
     }
   }
 
-  /// Busca inscrições do usuário (correspondente a Dashboard.svelte fetchSubscriptions)
+  // Busca inscrições do usuário
   Future<List<Map<String, dynamic>>> fetchSubscriptions(int userId) async {
     try {
       final headers = await _authHeaders();
@@ -74,7 +74,7 @@ class EventService {
     }
   }
 
-  /// Inscreve em um evento (correspondente a Dashboard.svelte subscribe())
+  // Inscreve em um evento
   Future<Map<String, dynamic>> subscribe(int eventId, int userId) async {
     try {
       final headers = await _authHeaders();
@@ -118,7 +118,7 @@ class EventService {
     }
   }
 
-  /// Cancela uma inscrição
+  // Cancela uma inscrição
   Future<Map<String, dynamic>> cancelSubscription(int subscriptionId) async {
     try {
       final headers = await _authHeaders();
@@ -138,7 +138,7 @@ class EventService {
     }
   }
 
-  /// Atualiza o perfil do usuário (correspondente a Dashboard.svelte performUpdateProfile)
+  // Atualiza o perfil do usuário
   Future<Map<String, dynamic>> updateProfile(
     int userId,
     Map<String, dynamic> payload,
@@ -168,7 +168,7 @@ class EventService {
     }
   }
 
-  /// Cria um evento do tipo Acampamento (POST /v1/campings)
+  // Cria um evento do tipo Acampamento (POST /v1/campings)
   Future<Map<String, dynamic>> createCamping(Map<String, dynamic> payload) async {
     try {
       final headers = await _authHeaders();

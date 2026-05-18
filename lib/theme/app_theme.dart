@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 
-/// Tokens de design correspondentes à paleta de cores do app.css do Svelte.
 class AppColors {
-  // ── Modo Claro ──
+  // Modo Claro
   static const lightBgPrimary = Color(0xFFF2EDE4);
   static const lightBgSecondary = Color(0xFFEAE4D9);
   static const lightTextPrimary = Color(0xFF1A1C1E);
   static const lightTextSecondary = Color(0xFF44474A);
   static const lightBorderUi = Color(0xFFD9D3C8);
 
-  // ── Modo Escuro ──
+  // Modo Escuro
   static const darkBgPrimary = Color(0xFF0D0F11);
   static const darkBgSecondary = Color(0xFF16191C);
   static const darkTextPrimary = Color(0xFFF0F2F5);
   static const darkTextSecondary = Color(0xFF9BA1A6);
   static const darkBorderUi = Color(0xFF2A2D31);
 
-  // ── Marca (compartilhado) ──
+  // Marca
   static const brand = Color(0xFFC4982A);
   static const brandButton = Color(0xFFC79E3A);
 }

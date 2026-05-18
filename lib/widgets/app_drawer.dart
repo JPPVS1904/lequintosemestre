@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../services/auth_service.dart';
 
-/// Barra lateral do painel correspondente ao Sidebar.svelte
-/// Itens: Eventos, [Admin: Usuários, Criar Evento], Minhas Inscrições, Perfil, Sair
+// Itens: Eventos, [Admin: Usuários, Criar Evento], Minhas Inscrições, Perfil, Sair
 class AppDrawer extends StatelessWidget {
   final String activeTab;
   final bool isAdmin;
@@ -29,7 +28,7 @@ class AppDrawer extends StatelessWidget {
       backgroundColor: bgColor,
       child: Column(
         children: [
-          // ── Área do Logo ──
+          // Área do Logo
           SafeArea(
             bottom: false,
             child: Padding(
@@ -48,7 +47,7 @@ class AppDrawer extends StatelessWidget {
 
           const SizedBox(height: 8),
 
-          // ── Navegação ──
+          // Navegação
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -95,7 +94,7 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
 
-          // ── Sair ──
+          // Sair
           Padding(
             padding: const EdgeInsets.all(12),
             child: Container(

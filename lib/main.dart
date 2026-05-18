@@ -6,7 +6,7 @@ import 'theme/app_theme.dart';
 import 'theme/theme_notifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Notificador de tema global – acessado pelo alternador FAB e qualquer tela
+// Notificador de tema global
 final themeNotifier = ThemeNotifier();
 
 void main() async {
