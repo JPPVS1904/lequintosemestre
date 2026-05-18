@@ -55,7 +55,7 @@ class LoginForm extends StatelessWidget {
               fontSize: 10,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.5,
-              color: secondaryTextColor.withOpacity(0.6),
+              color: secondaryTextColor.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: 40),

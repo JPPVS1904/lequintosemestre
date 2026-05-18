@@ -17,7 +17,7 @@ class LoginButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFC79E3A).withOpacity(0.4),
+            color: const Color(0xFFC79E3A).withValues(alpha: 0.4),
             offset: const Offset(0, 6),
             blurRadius: 12,
           )
@@ -33,7 +33,7 @@ class LoginButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          disabledBackgroundColor: const Color(0xFFC79E3A).withOpacity(0.6),
+          disabledBackgroundColor: const Color(0xFFC79E3A).withValues(alpha: 0.6),
         ),
         child: isLoading 
           ? const SizedBox(

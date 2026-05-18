@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/event.dart';
+import '../theme/app_theme.dart';
 
+/// Event card matching EventsList.svelte card style
 class EventCard extends StatelessWidget {
   final Event event;
   final VoidCallback onTapDetails;
@@ -13,28 +15,26 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
-    final bgSecondary = isDarkMode ? const Color(0xFF16191C) : const Color(0xFFF2EDE4);
-    final borderUi = isDarkMode ? const Color(0xFF2A2D31) : const Color(0xFFD9D3C8);
-    final textPrimary = isDarkMode ? const Color(0xFFF0F2F5) : const Color(0xFF1A1C1E);
-    final brandColor = const Color(0xFFC4982A);
-    final bgPrimary = isDarkMode ? const Color(0xFF0D0F11) : const Color(0xFFE2D9CC);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgSecondary = isDark ? AppColors.darkBgSecondary : AppColors.lightBgSecondary;
+    final borderColor = isDark ? AppColors.darkBorderUi : AppColors.lightBorderUi;
+    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+    final bgPrimary = isDark ? AppColors.darkBgPrimary : AppColors.lightBgPrimary;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: bgSecondary,
-        borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: borderUi),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ── Title + Badge ──
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: Text(
@@ -44,7 +44,7 @@ class EventCard extends StatelessWidget {
                     fontWeight: FontWeight.w900,
                     color: textPrimary,
                   ),
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -52,27 +52,29 @@ class EventCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: brandColor.withOpacity(0.1),
-                  border: Border.all(color: brandColor.withOpacity(0.2)),
-                  borderRadius: BorderRadius.circular(16),
+                  color: AppColors.brand.withValues(alpha: 0.1),
+                  border: Border.all(color: AppColors.brand.withValues(alpha: 0.2)),
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  event.isFestival ? 'FESTIVAL' : 'ACAMPAMENTO',
-                  style: TextStyle(
+                  event.typeLabel.toUpperCase(),
+                  style: const TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w900,
-                    color: brandColor,
+                    color: AppColors.brand,
                     letterSpacing: 1.5,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
+
+          // ── Footer ──
           Container(
             padding: const EdgeInsets.only(top: 16),
             decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: borderUi)),
+              border: Border(top: BorderSide(color: borderColor)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,7 +84,7 @@ class EventCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w900,
-                    color: textPrimary.withOpacity(0.4),
+                    color: textPrimary.withValues(alpha: 0.4),
                     letterSpacing: 1.5,
                   ),
                 ),
@@ -90,7 +92,7 @@ class EventCard extends StatelessWidget {
                   onTap: onTapDetails,
                   borderRadius: BorderRadius.circular(24),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       color: textPrimary,
                       borderRadius: BorderRadius.circular(24),
@@ -99,7 +101,7 @@ class EventCard extends StatelessWidget {
                       'VER DETALHES',
                       style: TextStyle(
                         fontSize: 10,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w700,
                         color: bgPrimary,
                       ),
                     ),

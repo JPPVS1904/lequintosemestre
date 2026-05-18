@@ -1,34 +1,45 @@
 import 'package:flutter/material.dart';
-import 'theme/theme_notifier.dart';
 import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
+import 'screens/dashboard_screen.dart';
+import 'theme/app_theme.dart';
+import 'theme/theme_notifier.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(const MyApp());
+/// Global theme notifier – accessed by the FAB toggle and any screen
+final themeNotifier = ThemeNotifier();
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('auth_token');
+
+  runApp(MyApp(initialRoute: token != null ? '/dashboard' : '/login'));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String initialRoute;
+
+  const MyApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: darkModeNotifier,
-      builder: (context, isDarkMode, child) {
+    return ListenableBuilder(
+      listenable: themeNotifier,
+      builder: (context, _) {
         return MaterialApp(
           title: 'Comunidade São Miguel',
-          theme: ThemeData(
-            brightness: Brightness.light,
-            scaffoldBackgroundColor: const Color(0xFFEBE4D8),
-            fontFamily: 'Roboto',
-          ),
-          darkTheme: ThemeData(
-            brightness: Brightness.dark,
-            scaffoldBackgroundColor: const Color(0xFF121212),
-            fontFamily: 'Roboto',
-          ),
-          themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
           debugShowCheckedModeBanner: false,
-          home: const LoginScreen(),
+          theme: AppTheme.light(),
+          darkTheme: AppTheme.dark(),
+          themeMode: themeNotifier.themeMode,
+          initialRoute: initialRoute,
+          routes: {
+            '/login': (context) => const LoginScreen(),
+            '/register': (context) => const RegisterScreen(),
+            '/dashboard': (context) => const DashboardScreen(),
+          },
         );
       },
     );

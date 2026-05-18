@@ -15,7 +15,7 @@ class FloatingIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final corFundo = modoEscuro ? const Color(0xFF2A2A2A) : const Color(0xFFF4EFE6);
-    final corSombra = modoEscuro ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.08);
+    final corSombra = modoEscuro ? Colors.black.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.08);
     final corIcone = modoEscuro ? Colors.white70 : const Color(0xFF4A4A4A);
 
     return Container(

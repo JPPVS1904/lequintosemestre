@@ -33,7 +33,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     final labelColor = widget.isDarkMode ? const Color(0xFFCCCCCC) : const Color(0xFF4A4A4A);
     final backgroundColor = widget.isDarkMode ? const Color(0xFF252525) : const Color(0xFFEBE4D5);
-    final shadowColor = widget.isDarkMode ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.08);
+    final shadowColor = widget.isDarkMode ? Colors.black.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.08);
     final textColor = widget.isDarkMode ? Colors.white : Colors.black87;
     final hintColor = widget.isDarkMode ? Colors.grey[600] : const Color(0xFF9E9E9E);
     final iconColor = widget.isDarkMode ? Colors.grey[400] : Colors.grey[600];

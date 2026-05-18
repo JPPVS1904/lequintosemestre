@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/theme_notifier.dart';
+import '../main.dart' show themeNotifier;
+import '../theme/app_theme.dart';
 
 class ThemeToggleButton extends StatelessWidget {
   const ThemeToggleButton({super.key});
@@ -7,22 +8,20 @@ class ThemeToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final boxBgColor = isDarkMode ? const Color(0xFF16191C) : const Color(0xFFF2EDE4);
-    final boxBorderColor = isDarkMode ? const Color(0xFF2A2D31) : const Color(0xFFD9D3C8);
-    final primaryTextColor = isDarkMode ? const Color(0xFFF0F2F5) : const Color(0xFF1A1C1E);
+    final boxBgColor = isDarkMode ? AppColors.darkBgSecondary : AppColors.lightBgSecondary;
+    final boxBorderColor = isDarkMode ? AppColors.darkBorderUi : AppColors.lightBorderUi;
+    final primaryTextColor = isDarkMode ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
 
     return InkWell(
-      onTap: () {
-        darkModeNotifier.value = !darkModeNotifier.value;
-      },
+      onTap: () => themeNotifier.toggle(),
       borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: boxBgColor.withOpacity(0.8),
+          color: boxBgColor.withValues(alpha: 0.8),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: boxBorderColor),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4))],
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, 4))],
         ),
         child: Icon(
           isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
@@ -32,4 +31,3 @@ class ThemeToggleButton extends StatelessWidget {
     );
   }
 }
-

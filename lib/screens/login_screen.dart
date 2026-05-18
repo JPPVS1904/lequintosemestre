@@ -1,10 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../main.dart' show themeNotifier;
 import '../services/auth_service.dart';
-import '../widgets/login_form.dart';
+import '../theme/app_theme.dart';
 import '../widgets/login_drawer.dart';
-import '../widgets/theme_toggle_button.dart';
-import 'dashboard_screen.dart';
+import '../widgets/app_modal.dart';
 
+/// CPF TextInputFormatter – applies mask 000.000.000-00
+class CpfInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    String digits = newValue.text.replaceAll(RegExp(r'\D'), '');
+    if (digits.length > 11) digits = digits.substring(0, 11);
+
+    final buffer = StringBuffer();
+    for (int i = 0; i < digits.length; i++) {
+      if (i == 3 || i == 6) buffer.write('.');
+      if (i == 9) buffer.write('-');
+      buffer.write(digits[i]);
+    }
+
+    return TextEditingValue(
+      text: buffer.toString(),
+      selection: TextSelection.collapsed(offset: buffer.length),
+    );
+  }
+}
+
+/// Login screen matching Login.svelte
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -13,157 +39,261 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final AuthService _authService = AuthService();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _cpfController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _showPassword = false;
   bool _rememberMe = false;
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _authService = AuthService();
 
-  Future<void> _login() async {
-    setState(() {
-      _isLoading = true;
-    });
+  Future<void> _handleLogin() async {
+    if (_cpfController.text.isEmpty || _passwordController.text.isEmpty) {
+      showAppModal(context, type: 'error', message: 'Preencha todos os campos.');
+      return;
+    }
 
-    try {
-      final success = await _authService.login(
-        _emailController.text,
-        _passwordController.text,
-      );
+    setState(() => _isLoading = true);
 
-      if (mounted) {
-        if (success) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                title: const Row(
-                  children: [
-                    Icon(Icons.check_circle, color: Colors.green, size: 28),
-                    SizedBox(width: 8),
-                    Text('Sucesso!', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ],
-                ),
-                content: const Text(
-                  'Você foi autenticado e conectado com sucesso ao sistema Laravel!',
-                  style: TextStyle(fontSize: 16),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const DashboardScreen()),
-                      );
-                    },
-                    child: const Text('ENTRAR NO APP', style: TextStyle(color: Color(0xFFC79E3A), fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              );
-            },
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Erro ao entrar. Credenciais inválidas.'), backgroundColor: Colors.red),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+    final result = await _authService.login(
+      _cpfController.text,
+      _passwordController.text,
+    );
+
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+
+    if (result['success'] == true) {
+      Navigator.pushReplacementNamed(context, '/dashboard');
+    } else {
+      showAppModal(context, type: 'error', message: result['message']);
     }
   }
 
   @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
-    final bgGradient = isDarkMode 
-        ? const LinearGradient(
-            begin: Alignment.bottomLeft,
-            end: Alignment.topRight,
-            colors: [Color(0xFF020304), Color(0xFF0D0F11), Color(0xFF242830)],
-          )
-        : const LinearGradient(
-            begin: Alignment.bottomLeft,
-            end: Alignment.topRight,
-            colors: [Color(0xFFC8BFB0), Color(0xFFE2D9CC), Color(0xFFF5F0E8)],
-          );
-
-    final boxBgColor = isDarkMode ? const Color(0xFF16191C) : const Color(0xFFF2EDE4);
-    final boxBorderColor = isDarkMode ? const Color(0xFF2A2D31) : const Color(0xFFD9D3C8);
-    final primaryTextColor = isDarkMode ? const Color(0xFFF0F2F5) : const Color(0xFF1A1C1E);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+    final textSecondary = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
 
     return Scaffold(
       key: _scaffoldKey,
       drawer: const LoginDrawer(),
+      // Gradient background matching App.svelte
       body: Container(
-        decoration: BoxDecoration(gradient: bgGradient),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: isDark
+                ? [const Color(0xFF020304), const Color(0xFF0D0F11), const Color(0xFF242830)]
+                : [const Color(0xFFC8BFB0), const Color(0xFFE2D9CC), const Color(0xFFF5F0E8)],
+          ),
+        ),
         child: SafeArea(
           child: Stack(
             children: [
-              Center(
-                child: LoginForm(
-                  emailController: _emailController,
-                  passwordController: _passwordController,
-                  isLoading: _isLoading,
-                  rememberMe: _rememberMe,
-                  onChangedRememberMe: (val) {
-                    setState(() {
-                      _rememberMe = val ?? false;
-                    });
-                  },
-                  onClickLogin: _login,
-                  onClickCreateAccount: () {
-                    Navigator.pushNamed(context, '/register');
-                  },
-                ),
-              ),
+              // ── Hamburger menu button ──
               Positioned(
-                top: 16,
-                left: 16,
-                child: InkWell(
-                  onTap: () {
-                    _scaffoldKey.currentState?.openDrawer();
-                  },
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
+                top: 8,
+                left: 8,
+                child: IconButton(
+                  onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+                  icon: Icon(Icons.menu_rounded, color: textPrimary, size: 28),
+                  style: IconButton.styleFrom(
+                    backgroundColor: (isDark ? AppColors.darkBgSecondary : AppColors.lightBgSecondary)
+                        .withValues(alpha: 0.8),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: boxBgColor.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: boxBorderColor),
-                    ),
-                    child: Icon(Icons.menu, color: primaryTextColor),
                   ),
                 ),
               ),
-              const Positioned(
-                bottom: 24,
-                right: 24,
-                child: ThemeToggleButton(),
+
+              // ── Theme toggle FAB ──
+              Positioned(
+                bottom: 16,
+                right: 16,
+                child: FloatingActionButton.small(
+                  heroTag: 'theme_login',
+                  onPressed: themeNotifier.toggle,
+                  backgroundColor: (isDark ? AppColors.darkBgSecondary : AppColors.lightBgSecondary)
+                      .withValues(alpha: 0.8),
+                  child: Icon(
+                    isDark ? Icons.wb_sunny_rounded : Icons.dark_mode_rounded,
+                    color: textPrimary,
+                    size: 20,
+                  ),
+                ),
+              ),
+
+              // ── Main form ──
+              Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Logo
+                      Image.asset(
+                        'lib/images/logo_comunidade_sao_miguel.png',
+                        height: 140,
+                        errorBuilder: (_, __, ___) => Icon(
+                          Icons.shield_rounded,
+                          size: 100,
+                          color: AppColors.brand,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Title
+                      Text(
+                        'Acesso',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w900,
+                          color: textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'PORTAL COMUNIDADE SÃO MIGUEL',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 2,
+                          color: textSecondary.withValues(alpha: 0.6),
+                        ),
+                      ),
+                      const SizedBox(height: 36),
+
+                      // CPF field
+                      _buildLabel('CPF'),
+                      const SizedBox(height: 6),
+                      TextField(
+                        controller: _cpfController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [CpfInputFormatter()],
+                        decoration: const InputDecoration(hintText: '000.000.000-00'),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Password field
+                      _buildLabel('SENHA'),
+                      const SizedBox(height: 6),
+                      TextField(
+                        controller: _passwordController,
+                        obscureText: !_showPassword,
+                        decoration: InputDecoration(
+                          hintText: '••••••••',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _showPassword ? Icons.visibility_off : Icons.visibility,
+                              color: textSecondary,
+                              size: 20,
+                            ),
+                            onPressed: () => setState(() => _showPassword = !_showPassword),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Remember me
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: _rememberMe,
+                            onChanged: (v) => setState(() => _rememberMe = v ?? false),
+                          ),
+                          GestureDetector(
+                            onTap: () => setState(() => _rememberMe = !_rememberMe),
+                            child: Text(
+                              'Lembrar de mim',
+                              style: TextStyle(
+                                color: textSecondary,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Login button
+                      SizedBox(
+                        width: double.infinity,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.brand.withValues(alpha: 0.3),
+                                offset: const Offset(0, 6),
+                                blurRadius: 16,
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton(
+                            onPressed: _isLoading ? null : _handleLogin,
+                            child: _isLoading
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2.5,
+                                    ),
+                                  )
+                                : const Text('ENTRAR AGORA'),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+
+                      // Register link
+                      GestureDetector(
+                        onTap: () => Navigator.pushNamed(context, '/register'),
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Novo por aqui? ',
+                            style: TextStyle(color: textSecondary, fontSize: 14),
+                            children: const [
+                              TextSpan(
+                                text: 'Crie sua conta',
+                                style: TextStyle(
+                                  color: AppColors.brand,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 4),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.5,
+            color: (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
           ),
         ),
       ),
