@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
-/// Shows a modal dialog matching Modal.svelte (error / success / confirm variants)
+/// Mostra um diálogo modal correspondente ao Modal.svelte (variantes de erro / sucesso / confirmação)
 Future<bool?> showAppModal(
   BuildContext context, {
   required String type, // 'error', 'success', 'confirm'
@@ -12,7 +12,7 @@ Future<bool?> showAppModal(
   final borderColor = isDark ? AppColors.darkBorderUi : AppColors.lightBorderUi;
   final textSecondary = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
 
-  // Icon/color per type
+  // Ícone/cor por tipo
   IconData icon;
   Color iconColor;
   String title;
@@ -49,7 +49,7 @@ Future<bool?> showAppModal(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Icon circle
+              // Círculo do ícone
               Container(
                 width: 64,
                 height: 64,
@@ -62,7 +62,7 @@ Future<bool?> showAppModal(
               ),
               const SizedBox(height: 20),
 
-              // Title
+              // Título
               Text(
                 title,
                 style: TextStyle(
@@ -73,7 +73,7 @@ Future<bool?> showAppModal(
               ),
               const SizedBox(height: 12),
 
-              // Message
+              // Mensagem
               Text(
                 message,
                 textAlign: TextAlign.center,
@@ -86,7 +86,7 @@ Future<bool?> showAppModal(
               ),
               const SizedBox(height: 28),
 
-              // Buttons
+              // Botões
               if (type == 'confirm')
                 Row(
                   children: [

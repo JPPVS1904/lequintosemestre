@@ -4,8 +4,8 @@ import '../services/event_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_modal.dart';
 
-/// Event creation form matching EventForm.svelte
-/// Supports both Acampamento (Camping) and Festival types.
+/// Formulário de criação de evento correspondente ao EventForm.svelte
+/// Suporta os tipos Acampamento (Camping) e Festival.
 class EventFormScreen extends StatefulWidget {
   final VoidCallback onSaveSuccess;
   final VoidCallback onCancel;
@@ -25,7 +25,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
   bool _loading = false;
   String _eventType = 'App\\Models\\Camping';
 
-  // ── General fields ──
+  // ── Campos gerais ──
   final _nameCtrl = TextEditingController();
   final _placeCtrl = TextEditingController();
   final _yearCtrl = TextEditingController(text: DateTime.now().year.toString());
@@ -33,7 +33,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
   final _imageCtrl = TextEditingController();
   DateTime? _startDate;
 
-  // ── Camping-specific fields ──
+  // ── Campos específicos de Acampamento ──
   final _noticeCtrl = TextEditingController();
   final _termCtrl = TextEditingController();
   final _camperFeeCtrl = TextEditingController(text: '0');
@@ -46,7 +46,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
   final _camperPaymentLinkCtrl = TextEditingController();
   final _servantPaymentLinkCtrl = TextEditingController();
 
-  // Camping date fields
+  // Campos de data de Acampamento
   DateTime? _raffleCamperSubStart;
   DateTime? _raffleCamperSubEnd;
   DateTime? _raffleCamperDate;
@@ -60,7 +60,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
   DateTime? _servantRegEnd;
   DateTime? _servantPaymentDate;
 
-  // ── Festival-specific fields ──
+  // ── Campos específicos de Festival ──
   final _festMinAgeCtrl = TextEditingController(text: '0');
   final _ticketPriceCtrl = TextEditingController(text: '0');
   final _festPaymentLinkCtrl = TextEditingController();
@@ -204,7 +204,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Back button ──
+          // ── Botão de voltar ──
           TextButton.icon(
             onPressed: widget.onCancel,
             icon: Icon(Icons.arrow_back_ios_rounded, size: 16, color: textSecondary),
@@ -212,7 +212,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
           ),
           const SizedBox(height: 8),
 
-          // Main container
+          // Container principal
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
@@ -223,7 +223,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ═══ SECTION 1: Tipo de Evento ═══
+                // ═══ SEÇÃO 1: Tipo de Evento ═══
                 _sectionTitle('1. TIPO DE EVENTO'),
                 const SizedBox(height: 12),
                 Row(
@@ -235,7 +235,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
                 ),
                 const SizedBox(height: 28),
 
-                // ═══ SECTION 2: Informações Gerais ═══
+                // ═══ SEÇÃO 2: Informações Gerais ═══
                 _sectionTitle('2. INFORMAÇÕES GERAIS'),
                 const SizedBox(height: 12),
                 _fieldLabel('NOME DO EVENTO *'),
@@ -269,14 +269,14 @@ class _EventFormScreenState extends State<EventFormScreen> {
                 TextField(controller: _imageCtrl, decoration: const InputDecoration(hintText: 'Link ou path da Imagem')),
                 const SizedBox(height: 28),
 
-                // ═══ SECTION 3: Configurações Específicas ═══
+                // ═══ SEÇÃO 3: Configurações Específicas ═══
                 _sectionTitle('3. CONFIGURAÇÕES ESPECÍFICAS'),
                 const SizedBox(height: 12),
 
                 if (_isCamping) _buildCampingFields(textPrimary, textSecondary, borderColor)
                 else _buildFestivalFields(textPrimary, textSecondary, borderColor),
 
-                // ═══ Action buttons ═══
+                // ═══ Botões de ação ═══
                 Divider(color: borderColor, height: 40),
                 Row(
                   children: [
@@ -317,7 +317,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
     );
   }
 
-  // ── Camping-specific fields ──
+  // ── Campos específicos de Acampamento ──
   Widget _buildCampingFields(Color textPrimary, Color textSecondary, Color borderColor) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -404,7 +404,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
     );
   }
 
-  // ── Helper widgets ──
+  // ── Widgets auxiliares ──
   Widget _sectionTitle(String text) => Text(
         text,
         style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: AppColors.brand, letterSpacing: 2),

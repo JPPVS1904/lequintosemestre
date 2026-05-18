@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/event.dart';
 import '../theme/app_theme.dart';
 
-/// Event card matching EventsList.svelte card style
+/// Card de evento correspondente ao estilo de card do EventsList.svelte
 class EventCard extends StatelessWidget {
   final Event event;
   final VoidCallback onTapDetails;
@@ -32,7 +32,7 @@ class EventCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Title + Badge ──
+          // ── Título + Emblema ──
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -70,7 +70,7 @@ class EventCard extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // ── Footer ──
+          // ── Rodapé ──
           Container(
             padding: const EdgeInsets.only(top: 16),
             decoration: BoxDecoration(

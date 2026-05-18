@@ -5,7 +5,7 @@ import '../services/auth_service.dart';
 import '../widgets/app_modal.dart';
 import 'login_screen.dart' show CpfInputFormatter;
 
-/// Phone mask formatter – (00) 00000-0000
+/// Formatador de máscara de telefone – (00) 00000-0000
 class PhoneInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -32,7 +32,7 @@ class PhoneInputFormatter extends TextInputFormatter {
 
 
 
-/// Register screen matching Register.svelte
+/// Tela de Cadastro correspondente a Register.svelte
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -94,7 +94,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _handleRegister() async {
-    // Validations matching Register.svelte
+    // Validações correspondentes a Register.svelte
     final rawCpf = _cpfController.text.replaceAll(RegExp(r'\D'), '');
     if (rawCpf.length != 11) {
       showAppModal(context, type: 'error', message: 'Por favor, informe um CPF válido com 11 dígitos.');
@@ -180,7 +180,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         child: Column(
           children: [
-            // Logo (mobile)
+            // Logo (celular)
             Image.asset(
               'lib/images/logo_comunidade_sao_miguel.png',
               height: 120,
@@ -188,7 +188,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 12),
 
-            // Title
+            // Título
             Text(
               'Cadastrar',
               style: TextStyle(fontSize: 32, fontWeight: FontWeight.w900, color: textPrimary),
@@ -206,7 +206,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(height: 28),
 
             if (_success) ...[
-              // Success state matching Register.svelte
+              // Estado de sucesso correspondente a Register.svelte
               Container(
                 padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
@@ -228,7 +228,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
             ] else ...[
-              // ── Form fields ──
+              // ── Campos do formulário ──
               _buildLabel('Nome Completo *'),
               const SizedBox(height: 6),
               TextField(
@@ -329,7 +329,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
 
 
-              // Date picker
+              // Seletor de data
               _buildLabel('Data de Nascimento'),
               const SizedBox(height: 6),
               GestureDetector(
@@ -393,7 +393,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Footer note
+              // Nota de rodapé
               Text(
                 'Campos marcados com * são obrigatórios.',
                 style: TextStyle(
@@ -405,7 +405,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Submit button
+              // Botão de envio
               SizedBox(
                 width: double.infinity,
                 child: Container(
@@ -433,7 +433,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 28),
 
-              // Go to login
+              // Ir para o login
               GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: RichText(
@@ -462,7 +462,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final brandColor = AppColors.brand;
     final labelColor = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
 
-    // Detect required marker
+    // Detecta marcador obrigatório
     final hasRequired = text.endsWith('*');
     final cleanText = hasRequired ? text.substring(0, text.length - 2) : text;
 

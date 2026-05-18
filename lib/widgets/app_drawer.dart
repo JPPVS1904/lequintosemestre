@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../services/auth_service.dart';
 
-/// Dashboard sidebar drawer matching Sidebar.svelte
-/// Items: Eventos, [Admin: Usuários, Criar Evento], Minhas Inscrições, Perfil, Sair
+/// Barra lateral do painel correspondente ao Sidebar.svelte
+/// Itens: Eventos, [Admin: Usuários, Criar Evento], Minhas Inscrições, Perfil, Sair
 class AppDrawer extends StatelessWidget {
   final String activeTab;
   final bool isAdmin;
@@ -29,7 +29,7 @@ class AppDrawer extends StatelessWidget {
       backgroundColor: bgColor,
       child: Column(
         children: [
-          // ── Logo area ──
+          // ── Área do Logo ──
           SafeArea(
             bottom: false,
             child: Padding(
@@ -48,7 +48,7 @@ class AppDrawer extends StatelessWidget {
 
           const SizedBox(height: 8),
 
-          // ── Navigation ──
+          // ── Navegação ──
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -95,7 +95,7 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
 
-          // ── Logout ──
+          // ── Sair ──
           Padding(
             padding: const EdgeInsets.all(12),
             child: Container(
@@ -135,7 +135,7 @@ class AppDrawer extends StatelessWidget {
   }
 }
 
-/// Single navigation item for the drawer
+/// Item de navegação único para a barra lateral
 class _NavItem extends StatelessWidget {
   final IconData icon;
   final String label;

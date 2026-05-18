@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Global theme toggle notifier (mirrors App.svelte isDarkMode toggle)
+/// Notificador global de alternância de tema (espelha a alternância isDarkMode do App.svelte)
 class ThemeNotifier extends ChangeNotifier {
-  bool _isDarkMode = true; // default dark like the Svelte app
+  bool _isDarkMode = true; // escuro por padrão como o app Svelte
 
   ThemeNotifier() {
     _loadFromPrefs();

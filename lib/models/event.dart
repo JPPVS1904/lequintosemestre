@@ -1,4 +1,3 @@
-/// Event model matching the Laravel API response structure
 class Event {
   final int id;
   final String name;
@@ -40,14 +39,14 @@ class Event {
 
   String get typeLabel => isFestival ? 'Festival' : 'Acampamento';
 
-  /// Event fee based on type (camper_fee for Camping, ticket_price for Festival)
+  // Event fee based on type (camper_fee for Camping, ticket_price for Festival)
   double get fee {
     if (eventable == null) return 0;
     final raw = eventable!['camper_fee'] ?? eventable!['ticket_price'] ?? 0;
     return double.tryParse(raw.toString()) ?? 0;
   }
 
-  /// End date calculated from start_date + duration_days
+  // End date calculated from start_date + duration_days
   DateTime? get endDate {
     if (startDate == null) return null;
     final start = DateTime.tryParse(startDate!);

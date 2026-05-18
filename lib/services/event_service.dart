@@ -20,7 +20,7 @@ class EventService {
     };
   }
 
-  /// Fetch events – admin sees all, regular users see only available
+  /// Busca eventos – admin vê todos, usuários normais vêem apenas os disponíveis
   Future<List<Event>> fetchEvents({bool isAdmin = false}) async {
     try {
       final headers = await _authHeaders();
@@ -48,7 +48,7 @@ class EventService {
     }
   }
 
-  /// Fetch user subscriptions (matching Dashboard.svelte fetchSubscriptions)
+  /// Busca inscrições do usuário (correspondente a Dashboard.svelte fetchSubscriptions)
   Future<List<Map<String, dynamic>>> fetchSubscriptions(int userId) async {
     try {
       final headers = await _authHeaders();
@@ -74,7 +74,7 @@ class EventService {
     }
   }
 
-  /// Subscribe to an event (matching Dashboard.svelte subscribe())
+  /// Inscreve em um evento (correspondente a Dashboard.svelte subscribe())
   Future<Map<String, dynamic>> subscribe(int eventId, int userId) async {
     try {
       final headers = await _authHeaders();
@@ -118,7 +118,7 @@ class EventService {
     }
   }
 
-  /// Cancel a subscription
+  /// Cancela uma inscrição
   Future<Map<String, dynamic>> cancelSubscription(int subscriptionId) async {
     try {
       final headers = await _authHeaders();
@@ -138,7 +138,7 @@ class EventService {
     }
   }
 
-  /// Update user profile (matching Dashboard.svelte performUpdateProfile)
+  /// Atualiza o perfil do usuário (correspondente a Dashboard.svelte performUpdateProfile)
   Future<Map<String, dynamic>> updateProfile(
     int userId,
     Map<String, dynamic> payload,
@@ -168,7 +168,7 @@ class EventService {
     }
   }
 
-  /// Create a Camping eventable (POST /v1/campings)
+  /// Cria um evento do tipo Acampamento (POST /v1/campings)
   Future<Map<String, dynamic>> createCamping(Map<String, dynamic> payload) async {
     try {
       final headers = await _authHeaders();
@@ -187,7 +187,7 @@ class EventService {
     }
   }
 
-  /// Create a Festival eventable (POST /v1/festivals)
+  /// Cria um evento do tipo Festival (POST /v1/festivals)
   Future<Map<String, dynamic>> createFestival(Map<String, dynamic> payload) async {
     try {
       final headers = await _authHeaders();
@@ -206,7 +206,7 @@ class EventService {
     }
   }
 
-  /// Create an Event (POST /v1/events)
+  /// Cria um Evento (POST /v1/events)
   Future<Map<String, dynamic>> createEvent(Map<String, dynamic> payload) async {
     try {
       final headers = await _authHeaders();

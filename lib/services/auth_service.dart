@@ -8,7 +8,7 @@ class AuthService {
 
   AuthService({this.urlBase = 'http://127.0.0.1:8000/api/v1'});
 
-  /// Login via CPF + password (matching Login.svelte)
+  /// Login via CPF + senha (correspondente a Login.svelte)
   Future<Map<String, dynamic>> login(String cpf, String password, {bool remember = false}) async {
     try {
       final response = await http.post(
@@ -58,7 +58,7 @@ class AuthService {
     }
   }
 
-  /// Register a new user (matching Register.svelte payload)
+  /// Cadastrar um novo usuário (correspondente ao payload do Register.svelte)
   Future<Map<String, dynamic>> register(Map<String, dynamic> payload) async {
     try {
       debugPrint('[AuthService] Register payload: ${jsonEncode(payload)}');
@@ -95,7 +95,7 @@ class AuthService {
     }
   }
 
-  /// Logout – clear stored tokens
+  /// Sair – limpa os tokens armazenados
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');

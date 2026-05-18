@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_theme.dart';
 
-/// Login sidebar drawer matching Login.svelte's sidebar
-/// Contains: "Onde Estamos" (Maps link) and "Instagram" link
+/// Barra lateral de login correspondente à barra lateral do Login.svelte
+/// Contém: "Onde Estamos" (link do Maps) e link do "Instagram"
 class LoginDrawer extends StatelessWidget {
   const LoginDrawer({super.key});
 
@@ -85,7 +85,7 @@ class LoginDrawer extends StatelessWidget {
 
           const Spacer(),
 
-          // ── Footer ──
+          // ── Rodapé ──
           Container(
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(

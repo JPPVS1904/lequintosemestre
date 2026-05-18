@@ -6,7 +6,7 @@ import '../theme/app_theme.dart';
 import '../widgets/login_drawer.dart';
 import '../widgets/app_modal.dart';
 
-/// CPF TextInputFormatter – applies mask 000.000.000-00
+/// Formatador de CPF – aplica máscara 000.000.000-00
 class CpfInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -30,7 +30,7 @@ class CpfInputFormatter extends TextInputFormatter {
   }
 }
 
-/// Login screen matching Login.svelte
+/// Tela de Login correspondente a Login.svelte
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: const LoginDrawer(),
-      // Gradient background matching App.svelte
+      // Fundo gradiente correspondente ao App.svelte
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SafeArea(
           child: Stack(
             children: [
-              // ── Hamburger menu button ──
+              // ── Botão do menu hambúrguer ──
               Positioned(
                 top: 8,
                 left: 8,
@@ -110,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              // ── Theme toggle FAB ──
+              // ── FAB de alternância de tema ──
               Positioned(
                 bottom: 16,
                 right: 16,
@@ -127,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              // ── Main form ──
+              // ── Formulário principal ──
               Center(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
