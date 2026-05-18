@@ -75,12 +75,12 @@ class EventService {
   }
 
   // Inscreve em um evento
-  Future<Map<String, dynamic>> subscribe(int eventId, int userId) async {
+  Future<Map<String, dynamic>> subscribe(int eventId, int userId, {String subscriptionType = 'Campista'}) async {
     try {
       final headers = await _authHeaders();
       final payload = {
         'subscription_date': DateTime.now().toIso8601String().split('T')[0],
-        'subscription_type': 'Campista',
+        'subscription_type': subscriptionType,
         'was_selected': false,
         'substitute_position': 0,
         'paid_the_fee': false,
@@ -93,7 +93,7 @@ class EventService {
         'event_id': eventId,
       };
 
-      debugPrint('[EventService] Subscribing: $payload');
+      debugPrint('[EventService] Subscribing as $subscriptionType: $payload');
       final response = await http.post(
         Uri.parse('$urlBase/subscriptions'),
         headers: headers,

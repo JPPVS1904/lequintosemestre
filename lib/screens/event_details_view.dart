@@ -50,6 +50,18 @@ class EventDetailsView extends StatelessWidget {
         ? DateFormat('dd/MM/yyyy').format(event.endDate!)
         : 'Não definida';
 
+    final statusLabel = event.registrationStatusLabel;
+    final bool isOpen = event.isRegistrationOpen;
+    final bool isFuture = !isOpen && event.nextRegistrationStartDate != null;
+    final Color statusColor = isOpen
+        ? AppColors.brand
+        : isFuture
+            ? Colors.orange
+            : Colors.grey;
+    final Color statusBg = statusColor.withValues(alpha: 0.1);
+    final Color statusBorder = statusColor.withValues(alpha: 0.2);
+
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -96,16 +108,16 @@ class EventDetailsView extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     decoration: BoxDecoration(
-                      color: AppColors.brand.withValues(alpha: 0.1),
-                      border: Border.all(color: AppColors.brand.withValues(alpha: 0.2)),
+                      color: statusBg,
+                      border: Border.all(color: statusBorder),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
-                      'INSCRIÇÕES ABERTAS',
-                      style: const TextStyle(
+                      statusLabel,
+                      style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w900,
-                        color: AppColors.brand,
+                        color: statusColor,
                         letterSpacing: 1,
                       ),
                     ),

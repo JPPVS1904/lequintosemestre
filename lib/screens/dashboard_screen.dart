@@ -89,13 +89,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
-  Future<void> _requestSubscription(int eventId) async {
+  Future<void> _requestSubscription(Event event) async {
+    final subscriptionType = event.availableSubscriptionType;
+    if (subscriptionType == null) {
+      final nextDate = event.nextRegistrationStartDate;
+      if (nextDate != null) {
+        final d = '${nextDate.day.toString().padLeft(2, '0')}/${nextDate.month.toString().padLeft(2, '0')}/${nextDate.year}';
+        showAppModal(context, type: 'error', message: 'As inscrições para este evento ainda não começaram. Elas abrem em $d.');
+      } else {
+        showAppModal(context, type: 'error', message: 'As inscrições para este evento estão encerradas.');
+      }
+      return;
+    }
     final confirmed = await showAppModal(context, type: 'confirm',
-      message: 'Ao confirmar, você será redirecionado para suas inscrições. Deseja continuar?');
+      message: 'Ao confirmar, você será inscrito como $subscriptionType e redirecionado para suas inscrições. Deseja continuar?');
     if (confirmed != true) return;
     final rawId = _userData['id'];
     final userId = rawId is int ? rawId : int.tryParse(rawId.toString()) ?? 0;
-    final result = await _eventService.subscribe(eventId, userId);
+    final result = await _eventService.subscribe(event.id, userId, subscriptionType: subscriptionType);
     if (!mounted) return;
     if (result['success'] == true) {
       await showAppModal(context, type: 'success', message: 'Inscrição realizada com sucesso!');
@@ -228,7 +239,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: EventDetailsView(
               event: _selectedEvent!,
               onBack: () => _onTabSelected('events'),
-              onSubscribe: () => _requestSubscription(_selectedEvent!.id),
+              onSubscribe: () => _requestSubscription(_selectedEvent!),
             ),
           );
         }

@@ -45,6 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _cpfController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _documentController = TextEditingController();
 
   final _passwordController = TextEditingController();
   final _passwordConfirmController = TextEditingController();
@@ -122,6 +123,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
+    if (_documentController.text.trim().isEmpty) {
+      showAppModal(context, type: 'error', message: 'Por favor, informe o link ou número do seu documento.');
+      return;
+    }
+
     setState(() => _isLoading = true);
 
     final birthday =
@@ -132,7 +138,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'email': _emailController.text,
       'cpf': rawCpf,
       'phone': rawPhone,
-      'document': '',
+      'document': _documentController.text,
       'sex': _selectedSex,
       'birthday': birthday,
       'marital_status_id': _selectedMaritalStatusId,
@@ -281,6 +287,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 16),
+
+              _buildLabel('Documento (CPF ou CNH) *'),
+              const SizedBox(height: 6),
+              TextField(
+                controller: _documentController,
+                keyboardType: TextInputType.url,
+                decoration: const InputDecoration(hintText: 'Link ou número do documento'),
               ),
               const SizedBox(height: 16),
 

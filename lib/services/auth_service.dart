@@ -8,7 +8,7 @@ class AuthService {
 
   AuthService({this.urlBase = 'http://127.0.0.1:8000/api/v1'});
 
-  /// Login via CPF + senha (correspondente a Login.svelte)
+  // Login via CPF + senha
   Future<Map<String, dynamic>> login(String cpf, String password, {bool remember = false}) async {
     try {
       final response = await http.post(
@@ -58,7 +58,7 @@ class AuthService {
     }
   }
 
-  /// Cadastrar um novo usuário (correspondente ao payload do Register.svelte)
+  // Cadastrar um novo usuário
   Future<Map<String, dynamic>> register(Map<String, dynamic> payload) async {
     try {
       debugPrint('[AuthService] Register payload: ${jsonEncode(payload)}');
