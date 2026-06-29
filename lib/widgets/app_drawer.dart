@@ -2,27 +2,31 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../services/auth_service.dart';
 
-// Itens: Eventos, [Admin: Usuários, Criar Evento], Minhas Inscrições, Perfil, Sair
+/// Menu lateral principal do aplicativo (Drawer).
+/// Responsável por navegar entre as abas principais (Painel Geral, Minhas Inscrições, Notificações e Perfil).
+/// Recebe [activeTab] para destacar o item selecionado e [onTabSelected] para comunicar a mudança ao [DashboardScreen].
 class AppDrawer extends StatelessWidget {
   final String activeTab;
-  final bool isAdmin;
   final Function(String) onTabSelected;
-  final VoidCallback? onAddEvent;
 
   const AppDrawer({
     super.key,
     required this.activeTab,
-    required this.isAdmin,
     required this.onTabSelected,
-    this.onAddEvent,
   });
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = isDark ? AppColors.darkBgSecondary : AppColors.lightBgSecondary;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final borderColor = isDark ? AppColors.darkBorderUi : AppColors.lightBorderUi;
+    final bgColor = isDark
+        ? AppColors.darkBgSecondary
+        : AppColors.lightBgSecondary;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final borderColor = isDark
+        ? AppColors.darkBorderUi
+        : AppColors.lightBorderUi;
 
     return Drawer(
       backgroundColor: bgColor,
@@ -54,30 +58,28 @@ class AppDrawer extends StatelessWidget {
               children: [
                 _NavItem(
                   icon: Icons.event_rounded,
-                  label: 'Eventos',
+                  label: 'Atividades',
                   isActive: activeTab == 'events',
                   onTap: () {
                     onTabSelected('events');
                     Navigator.pop(context);
                   },
                 ),
-                if (isAdmin) ...[
-                  _NavItem(
-                    icon: Icons.add_rounded,
-                    label: 'Criar Evento',
-                    isActive: activeTab == 'event_form',
-                    onTap: () {
-                      if (onAddEvent != null) onAddEvent!();
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
                 _NavItem(
                   icon: Icons.assignment_rounded,
                   label: 'Minhas Inscrições',
                   isActive: activeTab == 'subscriptions',
                   onTap: () {
                     onTabSelected('subscriptions');
+                    Navigator.pop(context);
+                  },
+                ),
+                _NavItem(
+                  icon: Icons.notifications_rounded,
+                  label: 'Notificações',
+                  isActive: activeTab == 'inbox',
+                  onTap: () {
+                    onTabSelected('inbox');
                     Navigator.pop(context);
                   },
                 ),
@@ -110,7 +112,11 @@ class AppDrawer extends StatelessWidget {
                     if (!context.mounted) return;
                     Navigator.pushReplacementNamed(context, '/login');
                   },
-                  icon: const Icon(Icons.logout_rounded, size: 18, color: Colors.redAccent),
+                  icon: const Icon(
+                    Icons.logout_rounded,
+                    size: 18,
+                    color: Colors.redAccent,
+                  ),
                   label: Text(
                     'Sair',
                     style: TextStyle(
@@ -121,7 +127,9 @@ class AppDrawer extends StatelessWidget {
                   ),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     side: BorderSide(color: textPrimary.withValues(alpha: 0.2)),
                   ),
                 ),
@@ -151,7 +159,9 @@ class _NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textSecondary = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textSecondary = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),

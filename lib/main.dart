@@ -3,11 +3,7 @@ import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'theme/app_theme.dart';
-import 'theme/theme_notifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-// Notificador de tema global
-final themeNotifier = ThemeNotifier();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,22 +21,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: themeNotifier,
-      builder: (context, _) {
-        return MaterialApp(
-          title: 'Comunidade São Miguel',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.light(),
-          darkTheme: AppTheme.dark(),
-          themeMode: themeNotifier.themeMode,
-          initialRoute: initialRoute,
-          routes: {
-            '/login': (context) => const LoginScreen(),
-            '/register': (context) => const RegisterScreen(),
-            '/dashboard': (context) => const DashboardScreen(),
-          },
-        );
+    return MaterialApp(
+      title: 'Comunidade São Miguel',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light(),
+      themeMode: ThemeMode.light,
+      initialRoute: initialRoute,
+      routes: {
+        '/login': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterScreen(),
+        '/dashboard': (context) => const DashboardScreen(),
       },
     );
   }

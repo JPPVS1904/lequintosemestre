@@ -1,48 +1,71 @@
+/// Representa uma Atividade/Evento no sistema (Acampamento, Retiro, Curso, etc).
+/// Contém propriedades básicas como nome, local, datas, vagas e também encapsula a lógica
+/// de extração de detalhes específicos do [activitable] (o polimorfismo do Laravel).
 class Event {
   final int id;
   final String name;
-  final String eventableType;
+  final String activitableType;
   final String? place;
   final String? startDate;
   final int? durationDays;
   final int? totalVacancies;
   final String? image;
-  final Map<String, dynamic>? eventable;
+  final int? year;
+  final Map<String, dynamic>? activitable;
+  final Map<String, dynamic>? category;
 
   Event({
     required this.id,
     required this.name,
-    required this.eventableType,
+    required this.activitableType,
     this.place,
     this.startDate,
     this.durationDays,
     this.totalVacancies,
     this.image,
-    this.eventable,
+    this.year,
+    this.activitable,
+    this.category,
   });
 
+  /// Cria uma instância de [Event] a partir de um mapa de dados JSON recebido da API.
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
       id: json['id'] ?? 0,
-      name: json['name'] ?? 'Evento sem nome',
-      eventableType: json['eventable_type'] ?? '',
+      name: json['name'] ?? 'Atividade sem nome',
+      activitableType: json['activitable_type'] ?? '',
       place: json['place'],
       startDate: json['start_date'],
       durationDays: json['duration_days'],
       totalVacancies: json['total_vacancies'],
       image: json['image'],
-      eventable: json['eventable'] as Map<String, dynamic>?,
+      year: json['year'] is int
+          ? json['year']
+          : int.tryParse(json['year']?.toString() ?? ''),
+      activitable: json['activitable'] as Map<String, dynamic>?,
+      category: json['category'] as Map<String, dynamic>?,
     );
   }
 
-  bool get isFestival => eventableType.contains('Festival');
+  bool get isCamping => activitableType.contains('Camping');
+  bool get isEvent => activitableType.contains('Event');
 
-  String get typeLabel => isFestival ? 'Festival' : 'Acampamento';
+  String get typeLabel => isCamping ? 'Acampamento' : 'Evento';
 
-  // Preço de inscrição baseado no tipo (camper_fee para Acampamento, ticket_price para Festival)
+  String? get categoryName => category?['name'];
+
+  List<Map<String, dynamic>> get categorySectors {
+    final sectors = category?['sectors'];
+    if (sectors is List) {
+      return sectors.cast<Map<String, dynamic>>();
+    }
+    return [];
+  }
+
+  // Preço de inscrição baseado no tipo
   double get fee {
-    if (eventable == null) return 0;
-    final raw = eventable!['camper_fee'] ?? eventable!['ticket_price'] ?? 0;
+    if (activitable == null) return 0;
+    final raw = activitable!['camper_fee'] ?? activitable!['ticket_price'] ?? 0;
     return double.tryParse(raw.toString()) ?? 0;
   }
 
@@ -54,7 +77,7 @@ class Event {
     return start.add(Duration(days: durationDays ?? 0));
   }
 
-  // Verifica se uma data de inscrição está aberta (start <= now <= end)
+  // Verifica se um período de inscrição está aberto
   bool _periodOpen(String? startField, String? endField) {
     final now = DateTime.now();
     if (startField != null) {
@@ -71,67 +94,59 @@ class Event {
     return true;
   }
 
-  // Verifica se as inscrições para campistas estão abertas
+  // Inscrições para campistas abertas
   bool get isCamperRegistrationOpen {
-    if (isFestival || eventable == null) return false;
+    if (!isCamping || activitable == null) return false;
     return _periodOpen(
-      eventable!['camper_registration_start_date'],
-      eventable!['camper_registration_end_date'],
+      activitable!['camper_registration_start_date'],
+      activitable!['camper_registration_end_date'],
     );
   }
 
-  // Verifica se as inscrições para servos estão abertas
+  // Inscrições para servos abertas
   bool get isServantRegistrationOpen {
-    if (isFestival || eventable == null) return false;
+    if (!isCamping || activitable == null) return false;
     return _periodOpen(
-      eventable!['servant_registration_start_date'],
-      eventable!['servant_registration_end_date'],
+      activitable!['servant_registration_start_date'],
+      activitable!['servant_registration_end_date'],
     );
   }
 
-  // Verifica se alguma inscrição está aberta (campista OU servo OU festival)
+  // Alguma inscrição aberta
   bool get isRegistrationOpen {
-    if (isFestival) {
-      // Aberto quando: sale_start_date <= now < event start_date
-      return _periodOpen(
-        eventable?['sale_start_date'],
-        startDate, // usa o start_date do evento como data de encerramento
-      );
+    if (isEvent) {
+      return _periodOpen(activitable?['sale_start_date'], startDate);
     }
     return isCamperRegistrationOpen || isServantRegistrationOpen;
   }
 
-  // Tipo de inscrição disponível ('Campista', 'Servo', null)
-  // Prioriza Campista se ambos estiverem abertos
+  // Tipo de inscrição disponível
   String? get availableSubscriptionType {
     if (isCamperRegistrationOpen) return 'Campista';
     if (isServantRegistrationOpen) return 'Servo';
     return null;
   }
 
-  // Próxima data de abertura de inscrições (campista ou servo)
+  // Próxima data de abertura
   DateTime? get nextRegistrationStartDate {
     final now = DateTime.now();
 
-    if (isFestival) {
-      if (eventable == null) return null;
-      final saleStart = eventable!['sale_start_date'];
+    if (isEvent) {
+      if (activitable == null) return null;
+      final saleStart = activitable!['sale_start_date'];
       if (saleStart == null) return null;
       final date = DateTime.tryParse(saleStart);
       if (date != null && now.isBefore(date)) return date;
       return null;
     } else {
-      if (eventable == null) return null;
-
+      if (activitable == null) return null;
       final startFields = [
         'camper_registration_start_date',
         'servant_registration_start_date',
       ];
-
       DateTime? earliestFuture;
-
       for (final field in startFields) {
-        final val = eventable![field];
+        final val = activitable![field];
         if (val != null) {
           final date = DateTime.tryParse(val);
           if (date != null && now.isBefore(date)) {
@@ -141,19 +156,22 @@ class Event {
           }
         }
       }
-
       return earliestFuture;
     }
   }
 
-  // Label de status das inscrições para exibição
-  // Ex: "INSCRIÇÕES PARA CAMPISTA ABERTAS", "INSCRIÇÕES ABERTAS A PARTIR DE 01/01/2026"
+  // Faixa de idade (acampamentos)
+  int? get minimalAge => activitable?['minimal_age'];
+  int? get maximalAge => activitable?['maximal_age'];
+
+  // Label de status das inscrições
   String get registrationStatusLabel {
-    if (isFestival) {
+    if (isEvent) {
       if (isRegistrationOpen) return 'INSCRIÇÕES ABERTAS';
       final next = nextRegistrationStartDate;
       if (next != null) {
-        final d = '${next.day.toString().padLeft(2, '0')}/${next.month.toString().padLeft(2, '0')}/${next.year}';
+        final d =
+            '${next.day.toString().padLeft(2, '0')}/${next.month.toString().padLeft(2, '0')}/${next.year}';
         return 'INSCRIÇÕES ABERTAS A PARTIR DE $d';
       }
       return 'INSCRIÇÕES ENCERRADAS';
@@ -167,10 +185,10 @@ class Event {
 
     final next = nextRegistrationStartDate;
     if (next != null) {
-      final d = '${next.day.toString().padLeft(2, '0')}/${next.month.toString().padLeft(2, '0')}/${next.year}';
+      final d =
+          '${next.day.toString().padLeft(2, '0')}/${next.month.toString().padLeft(2, '0')}/${next.year}';
       return 'INSCRIÇÕES ABERTAS A PARTIR DE $d';
     }
     return 'INSCRIÇÕES ENCERRADAS';
   }
 }
-

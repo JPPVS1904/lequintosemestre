@@ -5,7 +5,8 @@ import '../services/auth_service.dart';
 import '../widgets/app_modal.dart';
 import 'login_screen.dart' show CpfInputFormatter;
 
-// Formatador de máscara de telefone - (00) 00000-0000
+/// Formatador de número de telefone celular.
+/// Aplica dinamicamente a máscara `(00) 00000-0000` enquanto o usuário digita.
 class PhoneInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -30,9 +31,9 @@ class PhoneInputFormatter extends TextInputFormatter {
   }
 }
 
-
-
-// Tela de Cadastro
+/// Tela de Cadastro de um novo usuário.
+/// Apresenta um formulário completo para criar uma conta na Comunidade São Miguel,
+/// realizando as validações necessárias antes de enviar os dados para o backend via [AuthService].
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -45,7 +46,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _cpfController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _documentController = TextEditingController();
 
   final _passwordController = TextEditingController();
   final _passwordConfirmController = TextEditingController();
@@ -81,9 +81,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       builder: (ctx, child) {
         return Theme(
           data: Theme.of(ctx).copyWith(
-            colorScheme: Theme.of(ctx).colorScheme.copyWith(
-                  primary: AppColors.brand,
-                ),
+            colorScheme: Theme.of(
+              ctx,
+            ).colorScheme.copyWith(primary: AppColors.brand),
           ),
           child: child!,
         );
@@ -98,13 +98,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // Validações
     final rawCpf = _cpfController.text.replaceAll(RegExp(r'\D'), '');
     if (rawCpf.length != 11) {
-      showAppModal(context, type: 'error', message: 'Por favor, informe um CPF válido com 11 dígitos.');
+      showAppModal(
+        context,
+        type: 'error',
+        message: 'Por favor, informe um CPF válido com 11 dígitos.',
+      );
       return;
     }
 
     final rawPhone = _phoneController.text.replaceAll(RegExp(r'\D'), '');
     if (rawPhone.length < 10) {
-      showAppModal(context, type: 'error', message: 'Por favor, informe um número de celular válido.');
+      showAppModal(
+        context,
+        type: 'error',
+        message: 'Por favor, informe um número de celular válido.',
+      );
       return;
     }
 
@@ -119,12 +127,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     if (_selectedSex == null || _selectedMaritalStatusId == null) {
-      showAppModal(context, type: 'error', message: 'Preencha todos os campos obrigatórios.');
-      return;
-    }
-
-    if (_documentController.text.trim().isEmpty) {
-      showAppModal(context, type: 'error', message: 'Por favor, informe o link ou número do seu documento.');
+      showAppModal(
+        context,
+        type: 'error',
+        message: 'Preencha todos os campos obrigatórios.',
+      );
       return;
     }
 
@@ -138,7 +145,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'email': _emailController.text,
       'cpf': rawCpf,
       'phone': rawPhone,
-      'document': _documentController.text,
       'sex': _selectedSex,
       'birthday': birthday,
       'marital_status_id': _selectedMaritalStatusId,
@@ -165,14 +171,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textSecondary = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
-    final bgSecondary = isDark ? AppColors.darkBgSecondary : AppColors.lightBgSecondary;
-    final borderColor = isDark ? AppColors.darkBorderUi : AppColors.lightBorderUi;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textSecondary = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
+    final bgSecondary = isDark
+        ? AppColors.darkBgSecondary
+        : AppColors.lightBgSecondary;
+    final borderColor = isDark
+        ? AppColors.darkBorderUi
+        : AppColors.lightBorderUi;
 
     final months = [
-      'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+      'Janeiro',
+      'Fevereiro',
+      'Março',
+      'Abril',
+      'Maio',
+      'Junho',
+      'Julho',
+      'Agosto',
+      'Setembro',
+      'Outubro',
+      'Novembro',
+      'Dezembro',
     ];
 
     return Scaffold(
@@ -190,14 +214,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Image.asset(
               'lib/images/logo_comunidade_sao_miguel.png',
               height: 120,
-              errorBuilder: (_, __, ___) => Icon(Icons.shield_rounded, size: 80, color: AppColors.brand),
+              errorBuilder: (_, __, ___) =>
+                  Icon(Icons.shield_rounded, size: 80, color: AppColors.brand),
             ),
             const SizedBox(height: 12),
 
             // Título
             Text(
               'Cadastrar',
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.w900, color: textPrimary),
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.w900,
+                color: textPrimary,
+              ),
             ),
             const SizedBox(height: 6),
             Text(
@@ -218,13 +247,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 decoration: BoxDecoration(
                   color: AppColors.brand.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: AppColors.brand.withValues(alpha: 0.3)),
+                  border: Border.all(
+                    color: AppColors.brand.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Column(
                   children: [
                     const Text('🛡️', style: TextStyle(fontSize: 48)),
                     const SizedBox(height: 16),
-                    Text('Bem-vindo!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: textPrimary)),
+                    Text(
+                      'Bem-vindo!',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: textPrimary,
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       'Seu acesso foi criado. Redirecionando...',
@@ -240,7 +278,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               TextField(
                 controller: _nameController,
                 maxLength: 80,
-                decoration: const InputDecoration(hintText: 'Seu nome aqui', counterText: ''),
+                decoration: const InputDecoration(
+                  hintText: 'Seu nome aqui',
+                  counterText: '',
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -249,7 +290,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(hintText: 'exemplo@gmail.com'),
+                decoration: const InputDecoration(
+                  hintText: 'exemplo@gmail.com',
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -265,7 +308,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: _cpfController,
                           keyboardType: TextInputType.number,
                           inputFormatters: [CpfInputFormatter()],
-                          decoration: const InputDecoration(hintText: '000.000.000-00'),
+                          decoration: const InputDecoration(
+                            hintText: '000.000.000-00',
+                          ),
                         ),
                       ],
                     ),
@@ -281,21 +326,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: _phoneController,
                           keyboardType: TextInputType.phone,
                           inputFormatters: [PhoneInputFormatter()],
-                          decoration: const InputDecoration(hintText: '(00) 00000-0000'),
+                          decoration: const InputDecoration(
+                            hintText: '(00) 00000-0000',
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(height: 16),
-
-              _buildLabel('Documento (CPF ou CNH) *'),
-              const SizedBox(height: 6),
-              TextField(
-                controller: _documentController,
-                keyboardType: TextInputType.url,
-                decoration: const InputDecoration(hintText: 'Link ou número do documento'),
               ),
               const SizedBox(height: 16),
 
@@ -329,7 +367,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         _buildDropdown(
                           value: _selectedMaritalStatusId,
                           items: _maritalOptions,
-                          onChanged: (v) => setState(() => _selectedMaritalStatusId = v),
+                          onChanged: (v) =>
+                              setState(() => _selectedMaritalStatusId = v),
                           borderColor: borderColor,
                           bgSecondary: bgSecondary,
                           textPrimary: textPrimary,
@@ -342,8 +381,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 16),
 
-
-
               // Seletor de data
               _buildLabel('Data de Nascimento'),
               const SizedBox(height: 6),
@@ -351,7 +388,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 onTap: _pickBirthday,
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 18,
+                  ),
                   decoration: BoxDecoration(
                     border: Border.all(color: borderColor),
                     borderRadius: BorderRadius.circular(16),
@@ -366,7 +406,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      Icon(Icons.calendar_today_rounded, color: textSecondary, size: 18),
+                      Icon(
+                        Icons.calendar_today_rounded,
+                        color: textSecondary,
+                        size: 18,
+                      ),
                     ],
                   ),
                 ),
@@ -384,7 +428,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         TextField(
                           controller: _passwordController,
                           obscureText: true,
-                          decoration: const InputDecoration(hintText: '••••••••'),
+                          decoration: const InputDecoration(
+                            hintText: '••••••••',
+                          ),
                         ),
                       ],
                     ),
@@ -399,7 +445,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         TextField(
                           controller: _passwordConfirmController,
                           obscureText: true,
-                          decoration: const InputDecoration(hintText: '••••••••'),
+                          decoration: const InputDecoration(
+                            hintText: '••••••••',
+                          ),
                         ),
                       ],
                     ),
@@ -440,7 +488,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ? const SizedBox(
                             width: 20,
                             height: 20,
-                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.5,
+                            ),
                           )
                         : const Text('CONFIRMAR CADASTRO'),
                   ),
@@ -458,7 +509,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: const [
                       TextSpan(
                         text: 'Faça login',
-                        style: TextStyle(color: AppColors.brand, fontWeight: FontWeight.w900),
+                        style: TextStyle(
+                          color: AppColors.brand,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
                     ],
                   ),
@@ -475,7 +529,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildLabel(String text) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final brandColor = AppColors.brand;
-    final labelColor = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final labelColor = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     // Detecta marcador obrigatório
     final hasRequired = text.endsWith('*');
@@ -495,7 +551,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               color: labelColor,
             ),
             children: hasRequired
-                ? [TextSpan(text: ' *', style: TextStyle(color: brandColor))]
+                ? [
+                    TextSpan(
+                      text: ' *',
+                      style: TextStyle(color: brandColor),
+                    ),
+                  ]
                 : null,
           ),
         ),
@@ -522,13 +583,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: DropdownButton<String>(
           value: value,
           isExpanded: true,
-          hint: Text('Selecione...', style: TextStyle(color: textSecondary.withValues(alpha: 0.6))),
+          hint: Text(
+            'Selecione...',
+            style: TextStyle(color: textSecondary.withValues(alpha: 0.6)),
+          ),
           dropdownColor: bgSecondary,
           items: items
-              .map((e) => DropdownMenuItem(
-                    value: e['value'],
-                    child: Text(e['label']!, style: TextStyle(color: textPrimary)),
-                  ))
+              .map(
+                (e) => DropdownMenuItem(
+                  value: e['value'],
+                  child: Text(
+                    e['label']!,
+                    style: TextStyle(color: textPrimary),
+                  ),
+                ),
+              )
               .toList(),
           onChanged: onChanged,
         ),

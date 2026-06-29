@@ -4,7 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/event.dart';
 
+/// Serviço responsável pelas requisições relacionadas a eventos e inscrições.
+/// Interage com a API V1 para listar atividades, buscar inscrições, enviar respostas de formulários e atualizar perfil.
 class EventService {
+  /// A URL base da API V1.
   final String urlBase;
 
   EventService({this.urlBase = 'http://127.0.0.1:8000/api/v1'});
@@ -20,35 +23,38 @@ class EventService {
     };
   }
 
-  // Busca eventos
-  Future<List<Event>> fetchEvents({bool isAdmin = false}) async {
+  /// Busca as atividades disponíveis utilizando o endpoint `/v1/activities`.
+  /// Retorna apenas atividades disponíveis (`available=true`).
+  /// Retorna uma lista de objetos [Event]. Em caso de erro, retorna uma lista vazia.
+  Future<List<Event>> fetchEvents() async {
     try {
       final headers = await _authHeaders();
-      final endpoint = isAdmin
-          ? '$urlBase/events'
-          : '$urlBase/events?available=true';
+      final endpoint = '$urlBase/activities?available=true';
 
-      debugPrint('[EventService] Fetching events from: $endpoint');
+      debugPrint('[EventService] Fetching activities from: $endpoint');
       final response = await http.get(Uri.parse(endpoint), headers: headers);
 
-      debugPrint('[EventService] Events status: ${response.statusCode}');
+      debugPrint('[EventService] Activities status: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         final List<dynamic> eventsJson = data['data'] ?? [];
-        debugPrint('[EventService] Events loaded: ${eventsJson.length}');
+        debugPrint('[EventService] Activities loaded: ${eventsJson.length}');
         return eventsJson.map((json) => Event.fromJson(json)).toList();
       } else {
-        debugPrint('[EventService] Erro ao buscar eventos: ${response.statusCode} - ${response.body}');
+        debugPrint(
+          '[EventService] Erro ao buscar atividades: ${response.statusCode} - ${response.body}',
+        );
         return [];
       }
     } catch (e) {
-      debugPrint('[EventService] Erro de conexão eventos: $e');
+      debugPrint('[EventService] Erro de conexão atividades: $e');
       return [];
     }
   }
 
-  // Busca inscrições do usuário
+  /// Busca todas as inscrições associadas a um [userId].
+  /// Retorna uma lista de mapas com os dados brutos das inscrições do usuário logado.
   Future<List<Map<String, dynamic>>> fetchSubscriptions(int userId) async {
     try {
       final headers = await _authHeaders();
@@ -61,7 +67,8 @@ class EventService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final list = List<Map<String, dynamic>>.from(
-          (data['data'] as List?)?.map((e) => Map<String, dynamic>.from(e)) ?? [],
+          (data['data'] as List?)?.map((e) => Map<String, dynamic>.from(e)) ??
+              [],
         );
         debugPrint('[EventService] Subscriptions loaded: ${list.length}');
         return list;
@@ -74,8 +81,88 @@ class EventService {
     }
   }
 
-  // Inscreve em um evento
-  Future<Map<String, dynamic>> subscribe(int eventId, int userId, {String subscriptionType = 'Campista'}) async {
+  // Busca detalhes de uma inscrição
+  Future<Map<String, dynamic>?> fetchSubscriptionDetail(
+    int subscriptionId,
+  ) async {
+    try {
+      final headers = await _authHeaders();
+      final url = '$urlBase/subscriptions/$subscriptionId';
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['data'] as Map<String, dynamic>?;
+      }
+      return null;
+    } catch (e) {
+      debugPrint('[EventService] Erro ao buscar detalhes da inscrição: $e');
+      return null;
+    }
+  }
+
+  // Busca perguntas de uma categoria
+  Future<List<Map<String, dynamic>>> fetchQuestions(int categoryId) async {
+    try {
+      final headers = await _authHeaders();
+      final url = '$urlBase/questions?category_id=$categoryId';
+      debugPrint('[EventService] Fetching questions from: $url');
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return List<Map<String, dynamic>>.from(
+          (data['data'] as List?)?.map((e) => Map<String, dynamic>.from(e)) ??
+              [],
+        );
+      }
+      return [];
+    } catch (e) {
+      debugPrint('[EventService] Erro ao buscar perguntas: $e');
+      return [];
+    }
+  }
+
+  // Envia respostas do questionário
+  Future<Map<String, dynamic>> submitAnswers(
+    int preRegistrationId,
+    List<Map<String, dynamic>> answers,
+  ) async {
+    try {
+      final headers = await _authHeaders();
+      final payload = {
+        'pre_registration_id': preRegistrationId,
+        'answers': answers,
+      };
+
+      final response = await http.post(
+        Uri.parse('$urlBase/answers'),
+        headers: headers,
+        body: jsonEncode(payload),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return {'success': true};
+      } else {
+        final data = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message': data['message'] ?? 'Erro ao enviar respostas.',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'Sem conexão com o servidor.'};
+    }
+  }
+
+  // Inscreve em uma atividade
+  Future<Map<String, dynamic>> subscribe(
+    int eventId,
+    int userId, {
+    String subscriptionType = 'Campista',
+    int? sectorId,
+    int? sector2Id,
+  }) async {
     try {
       final headers = await _authHeaders();
       final payload = {
@@ -91,6 +178,8 @@ class EventService {
         'selection_method_id': 1,
         'user_id': userId,
         'event_id': eventId,
+        if (sectorId != null) 'sector_id': sectorId,
+        if (sector2Id != null) 'sector2_id': sector2Id,
       };
 
       debugPrint('[EventService] Subscribing as $subscriptionType: $payload');
@@ -131,7 +220,10 @@ class EventService {
         return {'success': true};
       } else {
         final data = jsonDecode(response.body);
-        return {'success': false, 'message': data['message'] ?? 'Erro ao cancelar.'};
+        return {
+          'success': false,
+          'message': data['message'] ?? 'Erro ao cancelar.',
+        };
       }
     } catch (e) {
       return {'success': false, 'message': 'Sem conexão com o servidor.'};
@@ -168,65 +260,63 @@ class EventService {
     }
   }
 
-  // Cria um evento do tipo Acampamento (POST /v1/campings)
-  Future<Map<String, dynamic>> createCamping(Map<String, dynamic> payload) async {
+  // INBOX
+  Future<List<dynamic>> fetchInboxMessages() async {
     try {
       final headers = await _authHeaders();
-      final response = await http.post(
-        Uri.parse('$urlBase/campings'),
+      final res = await http.get(
+        Uri.parse('$urlBase/inbox-messages'),
         headers: headers,
-        body: jsonEncode(payload),
       );
-      final data = jsonDecode(response.body);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return {'success': true, 'data': data['data']};
+      if (res.statusCode == 200) {
+        final decoded = jsonDecode(res.body);
+        return decoded['data'] ?? [];
       }
-      return {'success': false, 'message': data['message'] ?? 'Erro ao criar acampamento.'};
     } catch (e) {
-      return {'success': false, 'message': 'Sem conexão com o servidor.'};
+      debugPrint('[EventService] Erro inbox: $e');
+    }
+    return [];
+  }
+
+  Future<bool> markInboxMessageAsRead(int id) async {
+    try {
+      final headers = await _authHeaders();
+      final res = await http.put(
+        Uri.parse('$urlBase/inbox-messages/$id/read'),
+        headers: headers,
+      );
+      return res.statusCode == 200;
+    } catch (e) {
+      debugPrint('[EventService] Erro read inbox: $e');
+      return false;
     }
   }
 
-  /// Cria um evento do tipo Festival (POST /v1/festivals)
-  Future<Map<String, dynamic>> createFestival(Map<String, dynamic> payload) async {
+  Future<bool> markAllInboxMessagesAsRead() async {
     try {
       final headers = await _authHeaders();
-      final response = await http.post(
-        Uri.parse('$urlBase/festivals'),
+      final res = await http.put(
+        Uri.parse('$urlBase/inbox-messages/read-all'),
         headers: headers,
-        body: jsonEncode(payload),
       );
-      final data = jsonDecode(response.body);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return {'success': true, 'data': data['data']};
-      }
-      return {'success': false, 'message': data['message'] ?? 'Erro ao criar festival.'};
+      return res.statusCode == 200;
     } catch (e) {
-      return {'success': false, 'message': 'Sem conexão com o servidor.'};
+      debugPrint('[EventService] Erro read all inbox: $e');
+      return false;
     }
   }
 
-  /// Cria um Evento (POST /v1/events)
-  Future<Map<String, dynamic>> createEvent(Map<String, dynamic> payload) async {
+  Future<bool> deleteInboxMessage(int id) async {
     try {
       final headers = await _authHeaders();
-      final response = await http.post(
-        Uri.parse('$urlBase/events'),
+      final res = await http.delete(
+        Uri.parse('$urlBase/inbox-messages/$id'),
         headers: headers,
-        body: jsonEncode(payload),
       );
-      final data = jsonDecode(response.body);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return {'success': true, 'data': data['data']};
-      }
-      String message = data['message'] ?? 'Erro ao criar evento.';
-      if (data['errors'] != null) {
-        final errors = data['errors'] as Map<String, dynamic>;
-        message = (errors.values.first as List).first.toString();
-      }
-      return {'success': false, 'message': message};
+      return res.statusCode == 200;
     } catch (e) {
-      return {'success': false, 'message': 'Sem conexão com o servidor.'};
+      debugPrint('[EventService] Erro delete inbox: $e');
+      return false;
     }
   }
 }

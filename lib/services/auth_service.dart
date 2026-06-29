@@ -3,13 +3,23 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Serviço responsável pela autenticação do usuário.
+/// Comunica-se com os endpoints de autenticação (login, cadastro e logout) da API Laravel.
 class AuthService {
+  /// A URL base para a API V1. Por padrão aponta para o localhost.
   final String urlBase;
 
   AuthService({this.urlBase = 'http://127.0.0.1:8000/api/v1'});
 
-  // Login via CPF + senha
-  Future<Map<String, dynamic>> login(String cpf, String password, {bool remember = false}) async {
+  /// Realiza o login do usuário com CPF e senha.
+  /// Se [remember] for true, poderia indicar ao backend para gerar um token de longa duração (se implementado).
+  /// Retorna um Map com a chave 'success' indicando o sucesso da operação,
+  /// e o 'data' ou 'message' dependendo do resultado.
+  Future<Map<String, dynamic>> login(
+    String cpf,
+    String password, {
+    bool remember = false,
+  }) async {
     try {
       final response = await http.post(
         Uri.parse('$urlBase/login'),
@@ -53,12 +63,15 @@ class AuthService {
       debugPrint('[AuthService] Erro CRÍTICO de conexão: $e');
       return {
         'success': false,
-        'message': 'Sem conexão com o servidor. Verifique se o backend está rodando.',
+        'message':
+            'Sem conexão com o servidor. Verifique se o backend está rodando.',
       };
     }
   }
 
-  // Cadastrar um novo usuário
+  /// Cadastra um novo usuário no sistema.
+  /// O [payload] deve conter as informações necessárias para o cadastro (nome, email, cpf, senha, etc).
+  /// Retorna um Map com o resultado da operação, em caso de erro, a primeira mensagem de validação é retornada em 'message'.
   Future<Map<String, dynamic>> register(Map<String, dynamic> payload) async {
     try {
       debugPrint('[AuthService] Register payload: ${jsonEncode(payload)}');
@@ -88,10 +101,7 @@ class AuthService {
       }
     } catch (e) {
       debugPrint('[AuthService] Erro de conexão: $e');
-      return {
-        'success': false,
-        'message': 'Erro de conexão com o servidor.',
-      };
+      return {'success': false, 'message': 'Erro de conexão com o servidor.'};
     }
   }
 

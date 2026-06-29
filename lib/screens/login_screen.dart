@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../main.dart' show themeNotifier;
 import '../services/auth_service.dart';
 import '../theme/app_theme.dart';
-import '../widgets/login_drawer.dart';
 import '../widgets/app_modal.dart';
 
-// Formatador de CPF - aplica máscara 000.000.000-00
+/// Formatador de CPF.
+/// Aplica dinamicamente a máscara `000.000.000-00` enquanto o usuário digita.
 class CpfInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -30,7 +29,8 @@ class CpfInputFormatter extends TextInputFormatter {
   }
 }
 
-// Tela de Login
+/// Tela de Login do aplicativo.
+/// Permite ao usuário autenticar-se utilizando seu CPF e Senha.
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -44,13 +44,16 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _showPassword = false;
-  bool _rememberMe = false;
 
   final _authService = AuthService();
 
   Future<void> _handleLogin() async {
     if (_cpfController.text.isEmpty || _passwordController.text.isEmpty) {
-      showAppModal(context, type: 'error', message: 'Preencha todos os campos.');
+      showAppModal(
+        context,
+        type: 'error',
+        message: 'Preencha todos os campos.',
+      );
       return;
     }
 
@@ -74,12 +77,15 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textSecondary = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textSecondary = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return Scaffold(
       key: _scaffoldKey,
-      drawer: const LoginDrawer(),
       // Fundo gradiente
       body: Container(
         decoration: BoxDecoration(
@@ -87,50 +93,28 @@ class _LoginScreenState extends State<LoginScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: isDark
-                ? [const Color(0xFF020304), const Color(0xFF0D0F11), const Color(0xFF242830)]
-                : [const Color(0xFFC8BFB0), const Color(0xFFE2D9CC), const Color(0xFFF5F0E8)],
+                ? [
+                    const Color(0xFF020304),
+                    const Color(0xFF0D0F11),
+                    const Color(0xFF242830),
+                  ]
+                : [
+                    const Color(0xFFC8BFB0),
+                    const Color(0xFFE2D9CC),
+                    const Color(0xFFF5F0E8),
+                  ],
           ),
         ),
         child: SafeArea(
           child: Stack(
             children: [
-              // Botão do menu hambúrguer
-              Positioned(
-                top: 8,
-                left: 8,
-                child: IconButton(
-                  onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-                  icon: Icon(Icons.menu_rounded, color: textPrimary, size: 28),
-                  style: IconButton.styleFrom(
-                    backgroundColor: (isDark ? AppColors.darkBgSecondary : AppColors.lightBgSecondary)
-                        .withValues(alpha: 0.8),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    padding: const EdgeInsets.all(12),
-                  ),
-                ),
-              ),
-
-              // FAB de alternância de tema
-              Positioned(
-                bottom: 16,
-                right: 16,
-                child: FloatingActionButton.small(
-                  heroTag: 'theme_login',
-                  onPressed: themeNotifier.toggle,
-                  backgroundColor: (isDark ? AppColors.darkBgSecondary : AppColors.lightBgSecondary)
-                      .withValues(alpha: 0.8),
-                  child: Icon(
-                    isDark ? Icons.wb_sunny_rounded : Icons.dark_mode_rounded,
-                    color: textPrimary,
-                    size: 20,
-                  ),
-                ),
-              ),
-
               // Formulário principal
               Center(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 24,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -174,7 +158,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: _cpfController,
                         keyboardType: TextInputType.number,
                         inputFormatters: [CpfInputFormatter()],
-                        decoration: const InputDecoration(hintText: '000.000.000-00'),
+                        decoration: const InputDecoration(
+                          hintText: '000.000.000-00',
+                        ),
                       ),
                       const SizedBox(height: 20),
 
@@ -188,37 +174,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           hintText: '••••••••',
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _showPassword ? Icons.visibility_off : Icons.visibility,
+                              _showPassword
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
                               color: textSecondary,
                               size: 20,
                             ),
-                            onPressed: () => setState(() => _showPassword = !_showPassword),
+                            onPressed: () =>
+                                setState(() => _showPassword = !_showPassword),
                           ),
                         ),
                       ),
                       const SizedBox(height: 12),
-
-                      // Lembrar de mim
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: _rememberMe,
-                            onChanged: (v) => setState(() => _rememberMe = v ?? false),
-                          ),
-                          GestureDetector(
-                            onTap: () => setState(() => _rememberMe = !_rememberMe),
-                            child: Text(
-                              'Lembrar de mim',
-                              style: TextStyle(
-                                color: textSecondary,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
 
                       // Botão de login
                       SizedBox(
@@ -257,7 +224,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: RichText(
                           text: TextSpan(
                             text: 'Novo por aqui? ',
-                            style: TextStyle(color: textSecondary, fontSize: 14),
+                            style: TextStyle(
+                              color: textSecondary,
+                              fontSize: 14,
+                            ),
                             children: const [
                               TextSpan(
                                 text: 'Crie sua conta',
@@ -293,7 +263,9 @@ class _LoginScreenState extends State<LoginScreen> {
             fontSize: 10,
             fontWeight: FontWeight.w800,
             letterSpacing: 1.5,
-            color: (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+            color: (isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary),
           ),
         ),
       ),

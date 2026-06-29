@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
-// Diálogo modal (variantes de erro / sucesso / confirmação)
+/// Exibe um diálogo modal com estilo consistente.
+/// O [type] pode ser 'success' (verde), 'error' (vermelho) ou 'confirm' (amarelo).
+/// O modal de confirmação retorna um `bool` (true se confirmado, false se cancelado).
 Future<bool?> showAppModal(
   BuildContext context, {
   required String type, // erro / sucesso / confirmação
@@ -10,7 +12,9 @@ Future<bool?> showAppModal(
   final isDark = Theme.of(context).brightness == Brightness.dark;
   final bgColor = isDark ? AppColors.darkBgPrimary : AppColors.lightBgPrimary;
   final borderColor = isDark ? AppColors.darkBorderUi : AppColors.lightBorderUi;
-  final textSecondary = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+  final textSecondary = isDark
+      ? AppColors.darkTextSecondary
+      : AppColors.lightTextSecondary;
 
   // Ícone e cor
   IconData icon;
